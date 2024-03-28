@@ -264,27 +264,29 @@ class WeatherUpdateCoordinator(DataUpdateCoordinator):
             )
 
     def _get_precip_hour(self, hours: dict, limit: int, day: int = None):
-        time = None
+        data = {}
         sum_prec = 0.0
         max_pop = 0
+        cmt = '안옴'
         for hour_data in hours[:limit]:
             # 강수량이 있으면, 비오는 시작시간
-            if time==None and float(hour_data[FIELD_PRECIPITATION]) > 0:
+            if data=={} and float(hour_data[FIELD_PRECIPITATION]) > 0:
                 snowrain = self.tran_key(self._condition_to_snowrain(self._iconcode_to_condition(int(hour_data[FIELD_ICONCODE]))))
                 tomorrow = '' if day==None or day==hour_data['day'] else '내일'
-                hour_data['cmt'] = f"{tomorrow} {hour_data['hour']}시 {snowrain}"
-                time = hour_data
+                cmt = f"{tomorrow} {hour_data['hour']}시 {snowrain}"
+                data = hour_data
             # 강수량
             sum_prec = sum_prec + float(hour_data[FIELD_PRECIPITATION])
             # 강수확률
             if max_pop < int(hour_data[FIELD_PRECIPCHANCE]):
                 max_pop = int(hour_data[FIELD_PRECIPCHANCE])
         if sum_prec > 0:
-            hour_data['hourlimit'] = limit
-            hour_data['sum_prec'] = sum_prec
-            hour_data['max_pop'] = max_pop
-            hour_data['snowrain'] = snowrain
-            return hour_data
+            data['cmt'] = cmt
+            data['hourlimit'] = limit
+            data['sum_prec'] = sum_prec
+            data['max_pop'] = max_pop
+            data['snowrain'] = snowrain
+            return data
         return {'cmt': "안옴", 'hour_limit': limit, 'hour': '-', 'prec': 0, 'sum_prec': 0, 'max_pop': max_pop, 'snowrain': '-'}
 
     def get_current(self, field):
