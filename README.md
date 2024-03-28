@@ -4,6 +4,9 @@ Includes a native Home Assistant Weather Entity and a variety of weather sensors
 
 This is a fork of the excellent [weatherdotcom integration by @jaydeethree](https://github.com/jaydeethree/Home-Assistant-weatherdotcom)
 
+* **kr-weathernews.com 날씨 데이타를 사용합니다. 날씨 데이타 저작권은 모두 `Weathernews`에 있습니다**
+* **개인(본인 또는 그 동거 가족)이 사적 이용 목적에 한해 사용가능합니다!**
+
 -------------------
 
 # Installation Prerequisites
