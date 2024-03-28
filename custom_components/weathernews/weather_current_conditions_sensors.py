@@ -23,7 +23,7 @@ from .const import (
 )
 from homeassistant.components.sensor import SensorEntityDescription, SensorDeviceClass, SensorStateClass
 from homeassistant.const import PERCENTAGE, UV_INDEX, DEGREE, UnitOfLength, UnitOfTemperature, \
-    UnitOfVolumetricFlux, UnitOfPressure, UnitOfSpeed
+    UnitOfVolumetricFlux, UnitOfPressure, UnitOfSpeed, CONCENTRATION_MICROGRAMS_PER_CUBIC_METER
 from homeassistant.helpers.typing import StateType
 
 
@@ -37,7 +37,7 @@ class WeatherRequiredKeysMixin:
 class WeatherSensorEntityDescription(
     SensorEntityDescription, WeatherRequiredKeysMixin
 ):
-    attr_fn: Callable[[dict[str, Any]], dict[str, StateType]] = lambda _: {}
+    # attr_fn: Callable[[dict[str, Any]], dict[str, StateType]] = lambda _: {}
     unit_fn: Callable[[bool], str | None] = lambda _: None
     attr_key: Callable[[list], Any | None] = lambda _: None 
     """Describes Weather.com Sensor entity."""
@@ -235,13 +235,15 @@ current_condition_sensor_descriptions = [
         key="pm10",
         name="PM10",
         icon="mdi:blur",
-        attr_key=['pm10grade'],
+        unit_fn=lambda metric: CONCENTRATION_MICROGRAMS_PER_CUBIC_METER,
         value_fn=lambda data, _: cast(float, data),
+        attr_key=['pm10grade'],
     ),
     WeatherSensorEntityDescription(
         key="pm25",
         name="PM2.5",
         icon="mdi:blur-linear",
+        unit_fn=lambda metric: CONCENTRATION_MICROGRAMS_PER_CUBIC_METER,
         value_fn=lambda data, _: cast(float, data),
         attr_key=['pm25grade'],
     ),
@@ -299,6 +301,7 @@ current_condition_sensor_descriptions = [
         key="khai",
         name="CAI",
         icon="mdi:tailwind",
+        unit_fn=lambda metric: CONCENTRATION_MICROGRAMS_PER_CUBIC_METER,
         value_fn=lambda data, _: cast(float, data),
         # attr_fn=lambda _: {}
         attr_key=['pm'],

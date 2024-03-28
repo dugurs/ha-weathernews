@@ -179,6 +179,26 @@ class WeatherUpdateCoordinator(DataUpdateCoordinator):
             if precipHourTomarrowAttr['hour'] != None:
                 precipHourTomarrowAttr['cmt'] = "{} {}시".format("" if result_data['daily'][0]['day']==precipHourTomarrowAttr['day'] else "내일", precipHourTomarrowAttr['hour'])
 
+            # 통합대기 지수
+            khai = int(result_data3['aq']['khai'])
+            if khai < 50:
+                khaigrade = '좋음'
+            elif khai < 100:
+                khaigrade = '보통'
+            elif khai < 250:
+                khaigrade = '나쁨'
+            elif khai < 500:
+                khaigrade = '매우나쁨'
+            else:
+                khaigrade = ''
+
+            # 통합대기 속성추가
+            result_data3['aq'].update({
+                'pm10grade': result_data2[0]['air']['pm10']['description'],
+                'pm25grade': result_data2[0]['air']['pm25']['description'],
+                'khaigrade': khaigrade
+            })
+            # 현재날씨 속성추가
             result_data['current'].update({
                 'sunrise': result_data['sunrise'],
                 'sunset': result_data['sunset'],
