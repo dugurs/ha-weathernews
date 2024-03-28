@@ -1,0 +1,18 @@
+{
+  "config": {
+    "error": {
+      "invalid_api_key": "잘못된 지역코드",
+      "unknown_error": "Unknown Error"
+    },
+    "step": {
+      "user": {
+        "data": {
+          "api_key": "지역코드",
+          "name": "지역명",
+          "lang": "언어"
+        },
+        "description": "https://www.kr-weathernews.com/ 를 접속해 도시를 검색하고 주소표시줄에서 region를 찾아 지역코드에 넣으세요"
+      }
+    }
+  }
+}

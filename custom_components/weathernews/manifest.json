@@ -1,0 +1,12 @@
+{
+  "domain": "weathernews",
+  "name": "웨더뉴스 WeatherNews",
+  "codeowners": ["@dugurs"],
+  "config_flow": true,
+  "dependencies": [],
+  "documentation": "https://github.com/dugurs/ha-weathernews",
+  "iot_class": "cloud_polling",
+  "issue_tracker": "https://github.com/dugurs/ha-weathernews/issues/",
+  "requirements": [],
+  "version": "1.0.2"
+}

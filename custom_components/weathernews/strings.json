@@ -1,0 +1,18 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "data": {
+          "api_key": "[%key:common::config_flow::data::api_key%]",
+          "name": "Name of the integration",
+          "lang": "Language"
+        },
+        "description": "Set up weathernews integration. view the source of https://www.kr-weathernews.com/ and search for Location code"
+      }
+    },
+    "error": {
+      "invalid_api_key": "[%key:common::config_flow::error::invalid_api_key%]",
+      "unknown_error": "Unknown Error"
+    }
+  }
+}
