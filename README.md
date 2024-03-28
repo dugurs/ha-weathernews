@@ -31,13 +31,13 @@ This integration is available in HACS, so just install it from there and then:
    
    [![Open your Home Assistant instance and show the add add-on repository dialog with a specific repository URL pre-filled.](https://my.home-assistant.io/badges/supervisor_add_addon_repository.svg)](https://my.home-assistant.io/redirect/supervisor_add_addon_repository/?repository_url=https%3A%2F%2Fgithub.com%2Fdugurs%2Fha-weathernews)
    
-2. In Home Assistant Settings, select DEVICES & SERVICES, then ADD INTEGRATION. `Weather News`
+2. In Home Assistant Settings, select DEVICES & SERVICES, then ADD INTEGRATION. `웨더뉴스 WeatherNews`
    
    [![Open your Home Assistant instance and start setting up a new integration.](https://my.home-assistant.io/badges/config_flow_start.svg)](https://my.home-assistant.io/redirect/config_flow_start/?domain=weathernews)
-3. Select the "Weather News" integration.
+3. Select the "웨더뉴스 WeatherNews" integration.
 4. url 열기 https://www.kr-weathernews.com/
-5. 도시검색
-6. 주소표시줄 ?region=XXXXXXXXXX 를 "지역코드"에 넣기 
+5. 도시검색 > 도시 선택
+6. 주소표시줄 ?region=XXXXXXXXXX의 XXXXXXXXXX 숫자를 "지역코드"에 넣기 
 
 [Back to top](#top)
 
