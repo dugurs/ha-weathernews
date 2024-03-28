@@ -320,4 +320,32 @@ current_condition_sensor_descriptions = [
         value_fn=lambda data, _: cast(str, data),
         attr_key=['precipHourTomarrowAttr'],
     ),
+    WeatherSensorEntityDescription(
+        key="precipHour3",
+        name="precip 3Hour",
+        icon="mdi:weather-rainy",
+        value_fn=lambda data, _: cast(str, data),
+        attr_key=['precipHour3Attr'],
+    ),
+    WeatherSensorEntityDescription(
+        key="precipHour6",
+        name="precip 6Hour",
+        icon="mdi:weather-rainy",
+        value_fn=lambda data, _: cast(str, data),
+        attr_key=['precipHour6Attr'],
+    ),
+    WeatherSensorEntityDescription(
+        key="precipHour9",
+        name="precip 9Hour",
+        icon="mdi:weather-rainy",
+        value_fn=lambda data, _: cast(str, data),
+        attr_key=['precipHour9Attr'],
+    ),
+    WeatherSensorEntityDescription(
+        key="precipHour12",
+        name="precip 12Hour",
+        icon="mdi:weather-rainy",
+        value_fn=lambda data, _: cast(str, data),
+        attr_key=['precipHour12Attr'],
+    ),
 ]

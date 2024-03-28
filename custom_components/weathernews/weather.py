@@ -29,7 +29,7 @@ from .const import (
     FIELD_DAYORNIGHT,
     FIELD_PRECIPCHANCE,
     FIELD_PRESSURE,
-    FIELD_QPF,
+    FIELD_PRECIPITATION,
     FIELD_TEMP,
     FIELD_TEMPERATUREMAX,
     FIELD_TEMPERATUREMIN,
@@ -236,7 +236,7 @@ class WeatherNewsForecast(WeatherNews):
                 ATTR_FORECAST_HUMIDITY:
                     self.coordinator.get_forecast(FIELD_HUMIDITY, data),
                 ATTR_FORECAST_PRECIPITATION:
-                    self.coordinator.get_forecast(FIELD_QPF, data),
+                    self.coordinator.get_forecast(FIELD_PRECIPITATION, data),
                 ATTR_FORECAST_PRECIPITATION_PROBABILITY:
                     self.coordinator.get_forecast(FIELD_PRECIPCHANCE, data),
 
@@ -284,7 +284,7 @@ class WeatherNewsForecast(WeatherNews):
                 # ATTR_FORECAST_NATIVE_WIND_GUST_SPEED:
                 #     self.coordinator.get_forecast(FIELD_WINDGUST, data),
                 ATTR_FORECAST_PRECIPITATION:
-                    self.coordinator.get_forecast(FIELD_QPF, data),
+                    self.coordinator.get_forecast(FIELD_PRECIPITATION, data),
                 ATTR_FORECAST_PRECIPITATION_PROBABILITY:
                     self.coordinator.get_forecast(FIELD_PRECIPCHANCE, data),
                 ATTR_FORECAST_TEMP:

@@ -22,6 +22,7 @@ from homeassistant.const import (
     PERCENTAGE, UnitOfPressure, UnitOfTemperature, UnitOfLength, UnitOfSpeed, UnitOfVolumetricFlux)
 from .const import (
     ICON_CONDITION_MAP,
+    SNOWYRAIN_CONDITION_MAP,
     FIELD_DAYPART,
     FIELD_HUMIDITY,
     FIELD_TEMPERATUREMAX,
@@ -33,6 +34,9 @@ from .const import (
     FIELD_WINDGUST,
     FIELD_WINDSPEED,
     FIELD_DAYORNIGHT,
+    FIELD_PRECIPCHANCE,
+    FIELD_PRECIPITATION,
+    FIELD_ICONCODE,
     DOMAIN,
     RESULTS_CURRENT,
     RESULTS_FORECAST_DAILY,
@@ -60,6 +64,7 @@ class WeatherUpdateCoordinator(DataUpdateCoordinator):
     """The Weather.com update coordinator."""
 
     icon_condition_map = ICON_CONDITION_MAP
+    snowrain_condition_map = SNOWYRAIN_CONDITION_MAP
 
     def __init__(
             self, hass: HomeAssistant, config: WeatherUpdateCoordinatorConfig
@@ -156,28 +161,19 @@ class WeatherUpdateCoordinator(DataUpdateCoordinator):
                 self._check_errors(url, result_data3)
                 tempdiff = int(result_data3['current']['tempdiff'])
                 if tempdiff == 0:
-                    tempdiffCmt = "어제와 같아요."
+                    tempdiffCmt = "어제와 같아요"
                 else:
-                    tempdiffCmt = "어제보다 {}도 {}아요.".format(abs(tempdiff), "높" if tempdiff > 0 else "낮")
+                    tempdiffCmt = "어제보다 {}도 {}아요".format(abs(tempdiff), "높" if tempdiff > 0 else "낮")
 
 
-            # 오늘비시작시간 - 비안옴
-            # 지금 시간과 첫번째 시간이 같지 않은 경우가 있어 처리
-            # if int(result_data['hourly'][0]['hour']) == 0 and int(result_data['hourly'][0]['hour']) != int(result_data3['current']['time'][:2]):
-            #     remainhour = 1 
-            # elif int(result_data['hourly'][0]['hour']) != int(result_data3['current']['time'][:2]):
-            #     remainhour = 23 - int(result_data['hourly'][0]['hour']) - 1
-            # else:
-            remainhour = 23 - int(result_data['hourly'][0]['hour']) 
-                
-            precipHourTodayAttr = self._get_precip_hour(result_data['hourly'], remainhour)
-            if precipHourTodayAttr['hour'] != None:
-                precipHourTodayAttr['cmt'] = f"{precipHourTodayAttr['hour']}시"
-
-            # 오늘내일비시작시간 - 내일 05시
-            precipHourTomarrowAttr = self._get_precip_hour(result_data['hourly'], remainhour+24)
-            if precipHourTomarrowAttr['hour'] != None:
-                precipHourTomarrowAttr['cmt'] = "{} {}시".format("" if result_data['daily'][0]['day']==precipHourTomarrowAttr['day'] else "내일", precipHourTomarrowAttr['hour'])
+            # 비시작시간
+            remainhour = 24 - int(result_data['hourly'][0]['hour']) 
+            precipHourTodayAttr = self._get_precip_hour(result_data['hourly'], remainhour) # 오늘 
+            precipHourTomarrowAttr = self._get_precip_hour(result_data['hourly'], remainhour+24, result_data['daily'][0]['day']) # 내일까지
+            precipHour3Attr = self._get_precip_hour(result_data['hourly'], 3, result_data['daily'][0]['day']) # 3시간
+            precipHour6Attr = self._get_precip_hour(result_data['hourly'], 6, result_data['daily'][0]['day']) # 6시간
+            precipHour9Attr = self._get_precip_hour(result_data['hourly'], 9, result_data['daily'][0]['day']) # 9시간
+            precipHour12Attr = self._get_precip_hour(result_data['hourly'], 12, result_data['daily'][0]['day']) # 12시간
 
             # 통합대기 지수
             khai = int(result_data3['aq']['khai'])
@@ -219,6 +215,14 @@ class WeatherUpdateCoordinator(DataUpdateCoordinator):
                 'precipHourTodayAttr': precipHourTodayAttr,
                 'precipHourTomarrow': precipHourTomarrowAttr['cmt'],
                 'precipHourTomarrowAttr': precipHourTomarrowAttr,
+                'precipHour3': precipHour3Attr['cmt'],
+                'precipHour3Attr': precipHour3Attr,
+                'precipHour6': precipHour6Attr['cmt'],
+                'precipHour6Attr': precipHour6Attr,
+                'precipHour9': precipHour9Attr['cmt'],
+                'precipHour9Attr': precipHour9Attr,
+                'precipHour12': precipHour12Attr['cmt'],
+                'precipHour12Attr': precipHour12Attr,
 
             })
             
@@ -259,11 +263,29 @@ class WeatherUpdateCoordinator(DataUpdateCoordinator):
                 ])
             )
 
-    def _get_precip_hour(self, hours: dict, limit: int):
+    def _get_precip_hour(self, hours: dict, limit: int, day: int = None):
+        time = None
+        sum_prec = 0.0
+        max_pop = 0
         for hour_data in hours[:limit]:
-            if float(hour_data["prec"]) > 0:
-                return hour_data
-        return {'cmt': '비안옴', 'hour': None, 'prec': 0}
+            # 강수량이 있으면, 비오는 시작시간
+            if time==None and float(hour_data[FIELD_PRECIPITATION]) > 0:
+                snowrain = self.tran_key(self._condition_to_snowrain(self._iconcode_to_condition(int(hour_data[FIELD_ICONCODE]))))
+                tomorrow = '' if day==None or day==hour_data['day'] else '내일'
+                hour_data['cmt'] = f"{tomorrow} {hour_data['hour']}시 {snowrain}"
+                time = hour_data
+            # 강수량
+            sum_prec = sum_prec + float(hour_data[FIELD_PRECIPITATION])
+            # 강수확률
+            if max_pop < int(hour_data[FIELD_PRECIPCHANCE]):
+                max_pop = int(hour_data[FIELD_PRECIPCHANCE])
+        if sum_prec > 0:
+            hour_data['hourlimit'] = limit
+            hour_data['sum_prec'] = sum_prec
+            hour_data['max_pop'] = max_pop
+            hour_data['snowrain'] = snowrain
+            return hour_data
+        return {'cmt': "안옴", 'hour_limit': limit, 'hour': '-', 'prec': 0, 'sum_prec': 0, 'max_pop': max_pop, 'snowrain': '-'}
 
     def get_current(self, field):
         try:
@@ -297,7 +319,15 @@ class WeatherUpdateCoordinator(DataUpdateCoordinator):
         for condition, iconcodes in cls.icon_condition_map.items():
             if icon_code in iconcodes:
                 return condition
-        _LOGGER.warning(f'Unmapped iconCode from TWC Api. (44 is Not Available (N/A)) "{icon_code}". ')
+        _LOGGER.warning(f'Unmapped iconCode. (44 is Not Available (N/A)) "{icon_code}". ')
+        return None
+    
+    @classmethod
+    def _condition_to_snowrain(cls, condition):
+        for snowrain, conditions in cls.snowrain_condition_map.items():
+            if condition in conditions:
+                return snowrain
+        _LOGGER.warning(f'Unmapped condition. (44 is Not Available (N/A)) "{condition}". ')
         return None
 
     @classmethod
@@ -315,6 +345,11 @@ class WeatherUpdateCoordinator(DataUpdateCoordinator):
             _LOGGER.warning(f'Sensor translation file {tfilename}.json does not exist. Defaulting to en-US.')
         return tfiledata
 
+    def tran_key(self, key):
+        """Return the name of the sensor."""
+        if key in self._tranfile.keys():
+            return self._tranfile[key]
+        return key
 
 class InvalidApiKey(HomeAssistantError):
     """Error to indicate there is an invalid api key."""

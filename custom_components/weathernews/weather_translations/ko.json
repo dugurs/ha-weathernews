@@ -33,6 +33,14 @@
   "khaigrade": "통합대기 지수",
   "tempdiff": "어제와 기온차",
   "tempdiffCmt": "어제와 기온차",
-  "precipHourToday": "오늘비시작시간",
-  "precipHourTomarrow": "오늘내일비시작시간"
+  "precipHourToday": "비 예상 오늘",
+  "precipHourTomarrow": "비 예상 오늘내일",
+  "precipHour3": "비 예상 3시간",
+  "precipHour6": "비 예상 6시간",
+  "precipHour9": "비 예상 9시간",
+  "precipHour12": "비 예상 12시간",
+  "pouring": "폭우",
+  "rain": "비",
+  "snow": "눈",
+  "snowrainy": "눈비"
 }
