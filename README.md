@@ -13,9 +13,10 @@ install and use the software.
 - This integration requires Home Assistant Version 2023.9 or greater
 
 # Screenshot
-![weather](https://github.com/dugurs/ha-weathernews/assets/41262994/b1bb10be-005c-4d08-a202-496b980e4acf)
 
-![sensors](https://github.com/dugurs/ha-weathernews/assets/41262994/b0f5d626-72b4-4ea6-ab82-87db955d897c)
+![weather](https://github.com/dugurs/ha-weathernews/assets/41262994/30621ead-c5a5-4307-8894-26dd5307407b)
+
+![sensors](https://github.com/dugurs/ha-weathernews/assets/41262994/37a9aa51-ce74-4d7d-ac27-6eb261a9c96a)
 
 [Back to top](#top)
 
