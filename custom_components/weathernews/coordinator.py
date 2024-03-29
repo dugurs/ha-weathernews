@@ -331,6 +331,7 @@ class WeatherUpdateCoordinator(DataUpdateCoordinator):
             'cmt2': '',
             'hour_limit': limit,
             'end_hour': '-',
+            'end_sum_prec': 0,
             'sum_prec': 0,
             'max_pop': max_pop,
             'snowrain': '-'
