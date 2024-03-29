@@ -26,6 +26,8 @@ from .const import (
     FIELD_HUMIDITY_HOURLY,
     FIELD_ICONCODE,
     FIELD_ICONCODE_DAILY,
+    FIELD_ICONCODE_AM,
+    FIELD_ICONCODE_PM,
     FIELD_DAYORNIGHT,
     FIELD_PRECIPCHANCE,
     FIELD_PRESSURE,
@@ -212,10 +214,13 @@ class WeatherNewsForecast(WeatherNews):
 
     @property
     def supported_features(self) -> WeatherEntityFeature:
-        return (WeatherEntityFeature.FORECAST_DAILY | WeatherEntityFeature.FORECAST_HOURLY)
+        return (WeatherEntityFeature.FORECAST_DAILY | WeatherEntityFeature.FORECAST_TWICE_DAILY | WeatherEntityFeature.FORECAST_HOURLY)
 
     async def async_forecast_daily(self) -> list[Forecast] | None:
         return self.forecast_daily
+
+    async def async_forecast_twice_daily(self) -> list[Forecast] | None:
+        return self.forecast_twice_daily
 
     async def async_forecast_hourly(self) -> list[Forecast] | None:
         return self.forecast_hourly
@@ -224,15 +229,24 @@ class WeatherNewsForecast(WeatherNews):
     def forecast_daily(self) -> list[Forecast]:
         """Return the daily forecast in native units."""
 
+        forecast = self._forecast_daily('daily')
+        return forecast
+
+    @property
+    def forecast_twice_daily(self) -> list[Forecast]:
+        """Return the daily forecast in native units."""
+
+        forecast = self._forecast_daily('twice_daily')
+        return forecast
+
+    def _forecast_daily(self, feature) -> list[Forecast] | None:
+        """Return the daily forecast in native units."""
+
         forecast = []
         for data in self.coordinator.data[RESULTS_FORECAST_DAILY]:
-            forecast.append(Forecast({
+            data_daily = {
                 # ATTR_FORECAST_CLOUD_COVERAGE:
                 #     self.coordinator.get_forecast_daily(FIELD_CLOUD_COVER, data),
-                ATTR_FORECAST_CONDITION:
-                    self.coordinator._iconcode_to_condition(
-                        self.coordinator.get_forecast(FIELD_ICONCODE_DAILY, data)
-                    ),
                 ATTR_FORECAST_HUMIDITY:
                     self.coordinator.get_forecast(FIELD_HUMIDITY, data),
                 ATTR_FORECAST_PRECIPITATION:
@@ -254,9 +268,45 @@ class WeatherNewsForecast(WeatherNews):
                     self.coordinator.get_forecast(FIELD_WINDDIRECTIONCARDINAL, data),
                 ATTR_FORECAST_WIND_SPEED:
                     self.coordinator.get_forecast(FIELD_WINDSPEED, data)
-            }))
+            }
+            if feature == 'daily':
+                icon_daily = self._condition_daily(
+                    self.coordinator._iconcode_to_condition(self.coordinator.get_forecast(FIELD_ICONCODE_AM, data)),
+                    self.coordinator._iconcode_to_condition(self.coordinator.get_forecast(FIELD_ICONCODE_PM, data))
+                )
+                data_daily.update({
+                    ATTR_FORECAST_CONDITION: icon_daily,
+                })
+                forecast.append(Forecast(data_daily))
+            else:
+                data_daily.update({
+                    ATTR_FORECAST_CONDITION:
+                        self.coordinator._iconcode_to_condition(
+                            self.coordinator.get_forecast(FIELD_ICONCODE_AM, data)
+                        ),
+                    "is_daytime": True
+                })
+                forecast.append(Forecast(data_daily))
+                data_daily.update({
+                    ATTR_FORECAST_CONDITION:
+                        self.coordinator._iconcode_to_condition(
+                            self.coordinator.get_forecast(FIELD_ICONCODE_PM, data)
+                        ),
+                    "is_daytime": False
+                })
+                forecast.append(Forecast(data_daily))
         return forecast
-    
+
+    def _condition_daily(self, am, pm):
+        list = ["snowy", "pouring", "rainy", "cloudy", "windy"]
+        for feature in list:
+            if ( feature in am or feature in pm ):
+                if feature in am:
+                    return am
+                else:
+                    return pm
+        return am
+
     @property
     def forecast_hourly(self) -> list[Forecast]:
         """Return the hourly forecast in native units."""
