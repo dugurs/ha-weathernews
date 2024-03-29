@@ -265,29 +265,54 @@ class WeatherUpdateCoordinator(DataUpdateCoordinator):
 
     def _get_precip_hour(self, hours: dict, limit: int, day: int = None):
         data = {}
+        end_hour = ''
         sum_prec = 0.0
         max_pop = 0
         cmt = '안옴'
-        for hour_data in hours[:limit]:
+        for idx, hour_data in enumerate(hours[:limit]):
             # 강수량이 있으면, 비오는 시작시간
             if data=={} and float(hour_data[FIELD_PRECIPITATION]) > 0:
                 snowrain = self.tran_key(self._condition_to_snowrain(self._iconcode_to_condition(int(hour_data[FIELD_ICONCODE]))))
                 tomorrow = '' if day==None or day==hour_data['day'] else '내일'
                 cmt = f"{tomorrow} {hour_data['hour']}시 {snowrain}"
                 data = hour_data
+                end_hour = hour_data['hour']
+                end_idx = idx
+                end_sum_prec = float(hour_data[FIELD_PRECIPITATION])
             # 강수량
-            sum_prec = sum_prec + float(hour_data[FIELD_PRECIPITATION])
+            sum_prec += float(hour_data[FIELD_PRECIPITATION])
             # 강수확률
             if max_pop < int(hour_data[FIELD_PRECIPCHANCE]):
                 max_pop = int(hour_data[FIELD_PRECIPCHANCE])
+            # 몇시까지(연속되는 강수량)
+            if data!={} and idx-end_idx == 1 and float(hour_data[FIELD_PRECIPITATION]) > 0:
+                end_idx = idx
+                end_hour = hour_data['hour']
+                end_sum_prec += float(hour_data[FIELD_PRECIPITATION])
         if sum_prec > 0:
-            data['cmt'] = cmt
-            data['hourlimit'] = limit
-            data['sum_prec'] = sum_prec
-            data['max_pop'] = max_pop
-            data['snowrain'] = snowrain
+            data.update({
+                'cmt': cmt,
+                'cmt2': f"{end_hour}시 까지 {round(end_sum_prec)}mm",
+                'hourlimit': limit,
+                'end_hour': end_hour,
+                'end_sum_prec': end_sum_prec,
+                'sum_prec': sum_prec,
+                'max_pop': max_pop,
+                'snowrain': snowrain,
+            })
             return data
-        return {'cmt': "안옴", 'hour_limit': limit, 'hour': '-', 'prec': 0, 'sum_prec': 0, 'max_pop': max_pop, 'snowrain': '-'}
+        return {
+            'hour': '-',
+            'prec': 0,
+            'pop': 0,
+            'cmt': "안옴",
+            'cmt2': '',
+            'hour_limit': limit,
+            'end_hour': '-',
+            'sum_prec': 0,
+            'max_pop': max_pop,
+            'snowrain': '-'
+        }
 
     def get_current(self, field):
         try:
