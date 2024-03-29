@@ -299,6 +299,13 @@ current_condition_sensor_descriptions = [
         attr_key=['tempdiff'],
     ),
     WeatherSensorEntityDescription(
+        key="weatherBriping",
+        name="Weather briefing",
+        icon="mdi:comment-text-outline",
+        value_fn=lambda data, _: cast(str, data),
+        attr_key=['weatherBripingAttr'],
+    ),
+    WeatherSensorEntityDescription(
         key="khai",
         name="CAI",
         icon="mdi:tailwind",
