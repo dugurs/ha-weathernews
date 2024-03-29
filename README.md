@@ -19,7 +19,12 @@ install and use the software.
 
 ![weather](https://github.com/dugurs/ha-weathernews/assets/41262994/30621ead-c5a5-4307-8894-26dd5307407b)
 
-![sensors](https://github.com/dugurs/ha-weathernews/assets/41262994/37a9aa51-ce74-4d7d-ac27-6eb261a9c96a)
+![weather more-info](https://github.com/dugurs/ha-weathernews/assets/41262994/e9f4a818-3d71-4222-a454-9695ef357f31)
+
+![sensors](https://github.com/dugurs/ha-weathernews/assets/41262994/64c8a4a0-323a-42c8-a7f2-4a10abc8f51d)
+
+![비 예상 정보](https://github.com/dugurs/ha-weathernews/assets/41262994/8f58a0e4-be6b-476c-ac86-5e911f3c9ee0)
+
 
 [Back to top](#top)
 
@@ -70,12 +75,7 @@ In addition to the Weather entity, these additional sensors will be created by t
 * `sensor.wn_<LOCATION_NAME>_cloud_cover_phrase` - a description of the current cloud cover, e.g. "Clear" or "Mostly Cloudy"
 * `sensor.wn_<LOCATION_NAME>_dewpoint` - the current dew point
 * `sensor.wn_<LOCATION_NAME>_heat_index` - the current heat index, which is what the current temperature "feels like" when combined with the current humidity
-* `sensor.wn_<LOCATION_NAME>_latitude` - the latitude that is configured for this location
 * `sensor.wn_<LOCATION_NAME>_local_observation_time` - the time that the Weather.com data was generated
-* `sensor.wn_<LOCATION_NAME>_longitude` - the longitude that is configured for this location
-* `sensor.wn_<LOCATION_NAME>_precipitation_last_hour` - the quantity of precipitation in the last hour
-* `sensor.wn_<LOCATION_NAME>_precipitation_last_6_hours` - the quantity of precipitation in the last 6 hours
-* `sensor.wn_<LOCATION_NAME>_precipitation_last_24_hours` - the quantity of precipitation in the last 24 hours
 * `sensor.wn_<LOCATION_NAME>_pressure` - the current barometric pressure
 * `sensor.wn_<LOCATION_NAME>_pressure_tendency_trend` - the current trend for barometric pressure, e.g. "Rising" or "Falling"
 * `sensor.wn_<LOCATION_NAME>_relative_humidity` - the current relative humidity
