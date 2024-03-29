@@ -1,7 +1,7 @@
 {
   "dewpt": "이슬점",
   "feeltemp": "체감온도",
-  "temperatureHeatIndex": "열 지수",
+  "heatindex": "열 지수",
   "rhum": "습도",
   "humi": "습도",
   "temp": "온도",

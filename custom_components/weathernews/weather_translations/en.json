@@ -1,7 +1,7 @@
 {
   "dewpt": "Dewpoint",
   "feeltemp": "Temperature - Feels Like",
-  "temperatureHeatIndex": "Heat Index",
+  "heatindex": "Heat Index",
   "rhum": "Relative Humidity",
   "humi": "Relative Humidity",
   "temp": "Temperature",
