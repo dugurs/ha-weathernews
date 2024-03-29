@@ -17,15 +17,17 @@ install and use the software.
 
 # Screenshot
 
-![weather](https://github.com/dugurs/ha-weathernews/assets/41262994/30621ead-c5a5-4307-8894-26dd5307407b)
+![weather](images/screenshot/weather.png)
 
-![weather more-info](https://github.com/dugurs/ha-weathernews/assets/41262994/e9f4a818-3d71-4222-a454-9695ef357f31)
+![weather more-info](images/screenshot/weather_more-info.png)
 
-![sensors](https://github.com/dugurs/ha-weathernews/assets/41262994/64c8a4a0-323a-42c8-a7f2-4a10abc8f51d)
+![sensors](images/screenshot/sensors.png)
 
-![비 예상 정보](https://github.com/dugurs/ha-weathernews/assets/41262994/8f58a0e4-be6b-476c-ac86-5e911f3c9ee0)
+![rain forecast for 6hours](images/screenshot/rain_forecast_6hours.png)
 
-![통합대기등급](https://github.com/dugurs/ha-weathernews/assets/41262994/f164934a-92c0-4e9c-82b9-0d31dbbad50d)
+![khai](images/screenshot/khai.png)
+
+![weather birefing](images/screenshot/weather_birefing.png)
 
 
 [Back to top](#top)
