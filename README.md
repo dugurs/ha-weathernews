@@ -25,6 +25,8 @@ install and use the software.
 
 ![비 예상 정보](https://github.com/dugurs/ha-weathernews/assets/41262994/8f58a0e4-be6b-476c-ac86-5e911f3c9ee0)
 
+![통합대기등급](https://github.com/dugurs/ha-weathernews/assets/41262994/f164934a-92c0-4e9c-82b9-0d31dbbad50d)
+
 
 [Back to top](#top)
 
