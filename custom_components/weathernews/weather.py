@@ -298,6 +298,9 @@ class WeatherNewsForecast(WeatherNews):
         return forecast
 
     def _condition_daily(self, am, pm):
+        """"Return the daily forecast in condition.
+        https://github.com/miumida/naver_weather/blob/master/custom_components/naver_weather/weather.py
+        """
         list = ["snowy", "pouring", "rainy", "cloudy", "windy"]
         for feature in list:
             if ( feature in am or feature in pm ):
