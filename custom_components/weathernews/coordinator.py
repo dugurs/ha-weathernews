@@ -206,7 +206,7 @@ class WeatherUpdateCoordinator(DataUpdateCoordinator):
             weather_briefing['최고 온도'] = f"최고 {result_data['current'][FIELD_TEMPERATUREMAX]}°C" if datetime.now().hour >= 15 else ''
             weather_briefing['습도'] = f"습도 {result_data['current'][FIELD_HUMIDITY]}%"
             weather_briefing['강수확률'] = f"강수확률 {precipHour9Attr['max_pop']}%" if precipHour9Attr['cmt'] != '안옴' else ''
-            weather_briefing['강수예상'] = f"{precipHour9Attr['cmt']} 예상, {precipHour9Attr['cmt2']}" if precipHour9Attr['cmt'] != '안옴' else ''
+            weather_briefing['강수예상'] = f"{precipHour9Attr['cmt']}, {precipHour9Attr['cmt2']} 예상" if precipHour9Attr['cmt'] != '안옴' else ''
             weather_briefing['미세먼지'] = f"미세먼지 {result_data2[0]['air']['pm10']['description']}"
             weather_briefing['초미세먼지'] = f"초미세먼지 {result_data2[0]['air']['pm25']['description']}"
             weather_briefing['통합대기'] = f"통합대기 {result_data3['aq']['khaigrade']}"
