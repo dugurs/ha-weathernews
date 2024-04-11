@@ -1,21 +1,25 @@
-# Home-Assistant-Weathernews.com
-Home Assistant custom integration for Weathernews.com.
-Includes a native Home Assistant Weather Entity and a variety of weather sensors.  
+# 웨더뉴스 Weathernews
+Home Assistant 커스텀 컴포넌트 for Weathernews 
 
-This is a fork of the excellent [weatherdotcom integration by @jaydeethree](https://github.com/jaydeethree/Home-Assistant-weatherdotcom)
+weatherdotcom을 fork해 만들어졌습니다. [weatherdotcom integration by @jaydeethree](https://github.com/jaydeethree/Home-Assistant-weatherdotcom)
 
 * **kr-weathernews.com 날씨 데이타를 사용합니다. 날씨 데이타 저작권은 모두 `Weathernews`에 있습니다**
 * **개인(본인 또는 그 동거 가족)이 사적 이용 목적에 한해 사용가능합니다!**
 
 -------------------
 
-# Installation Prerequisites
-Please review the minimum requirements below to determine whether you will be able to
-install and use the software.
+<br>
+<br>
 
-- This integration requires Home Assistant Version 2023.9 or greater
+# 설치 구성요소
+아래의 최소 요구 사항을 충족해야 설치 가능합니다. 
 
-# Screenshot
+- Home Assistant 버전 2023.9 이상이 필요합니다
+
+<br>
+<br>
+
+# 스크린샷
 
 ![weather](images/screenshot/weather.png)
 
@@ -32,84 +36,81 @@ install and use the software.
 
 [Back to top](#top)
 
-# Installation
+<br>
+<br>
 
-This integration is available in HACS, so just install it from there and then:
+# 설치
 
-1. HACS integration add repository `https://github.com/dugurs/ha-weathernews`
+HACS를 사용해 설치 합니다.
+
+1. 통합구성요소 설치
    
-   [![Open your Home Assistant instance and show the add add-on repository dialog with a specific repository URL pre-filled.](https://my.home-assistant.io/badges/supervisor_add_addon_repository.svg)](https://my.home-assistant.io/redirect/supervisor_add_addon_repository/?repository_url=https%3A%2F%2Fgithub.com%2Fdugurs%2Fha-weathernews)
+   * [![Open your Home Assistant instance and show the add add-on repository dialog with a specific repository URL pre-filled.](https://my.home-assistant.io/badges/supervisor_add_addon_repository.svg)](https://my.home-assistant.io/redirect/supervisor_add_addon_repository/?repository_url=https%3A%2F%2Fgithub.com%2Fdugurs%2Fha-weathernews)
+   * HACS > Integretions > 우측상단 메뉴 > Custom repositories 선택<br>
+      `https://github.com/dugurs/ha-weathernews` 주소 입력, Category에 'integration' 선택 후, 저장<br>
+      HACS > Integretions > EXPLORE & DOWNLOAD REPOSITORIES > sesrch `웨더뉴스` > DOWNLOAD
+
+2. 통합구성요서 설정추가
    
-2. In Home Assistant Settings, select DEVICES & SERVICES, then ADD INTEGRATION. `웨더뉴스 WeatherNews`
-   
-   [![Open your Home Assistant instance and start setting up a new integration.](https://my.home-assistant.io/badges/config_flow_start.svg)](https://my.home-assistant.io/redirect/config_flow_start/?domain=weathernews)
-3. Select the "웨더뉴스 WeatherNews" integration.
-4. url 열기 https://www.kr-weathernews.com/
-5. 도시검색 > 도시 선택
-6. 주소표시줄 ?region=XXXXXXXXXX의 XXXXXXXXXX 숫자를 "지역코드"에 넣기 
+   * [![Open your Home Assistant instance and start setting up a new integration.](https://my.home-assistant.io/badges/config_flow_start.svg)](https://my.home-assistant.io/redirect/config_flow_start/?domain=weathernews)
+   * 설정 > 기기 및 서비 > 통합구성요소 추가하기 > `웨더뉴스 WeatherNews`<br>
+      https://www.kr-weathernews.com/ 접속 > 도시검색 > 도시 선택<br>
+      주소표시줄 ?region=XXXXXXXXXX의 XXXXXXXXXX 숫자를 "지역코드"에 넣기
 
 [Back to top](#top)
 
-# Sensors Created By This Integration
-The following Weathernews.com data is available in the `weather.wn_<LOCATION_NAME>` entity:
+<br>
+<br>
 
-Current conditions:
-- Condition (icon)
-- Temperature
-- Barometric pressure
-- Wind speed
-- Wind bearing (cardinal direction)
-- Visibility
+# 생성되는 날씨 및 센서
+날씨 엔터티는 `weather.wn_<LOCATION_NAME>`과 같이 생성되고 매일, 매일2외, 매시 가 예보됩니다. 
 
-Forecast (daily and hourly):
-- Date/time of forecast
-- Temperature (high)
-- Temperature (low)
-- Condition (icon)
-- Precipitation quantity
-- Precipitation probability
-- Wind speed
-- Wind bearing (cardinal direction)
-
-To access these values in automations, scripts, etc. you will need to create triggered template sensors for them. [This post](https://community.home-assistant.io/t/customising-the-bom-weather-and-lovelace-now-in-hacs/123549/1465) on the Home Assistant forums provides details about how to do that.
-
-In addition to the Weather entity, these additional sensors will be created by this integration:
-
-* `sensor.wn_<LOCATION_NAME>_cloud_ceiling` - distance to the lowest cloud layer, or 0 if there are no clouds
-* `sensor.wn_<LOCATION_NAME>_cloud_cover_phrase` - a description of the current cloud cover, e.g. "Clear" or "Mostly Cloudy"
-* `sensor.wn_<LOCATION_NAME>_dewpoint` - the current dew point
-* `sensor.wn_<LOCATION_NAME>_heat_index` - the current heat index, which is what the current temperature "feels like" when combined with the current humidity
-* `sensor.wn_<LOCATION_NAME>_local_observation_time` - the time that the Weather.com data was generated
-* `sensor.wn_<LOCATION_NAME>_pressure` - the current barometric pressure
-* `sensor.wn_<LOCATION_NAME>_pressure_tendency_trend` - the current trend for barometric pressure, e.g. "Rising" or "Falling"
-* `sensor.wn_<LOCATION_NAME>_relative_humidity` - the current relative humidity
-* `sensor.wn_<LOCATION_NAME>_temperature` - the current temperature
-* `sensor.wn_<LOCATION_NAME>_temperature_feels_like` - what the current temperature "feels like" when combined with the current heat index and wind chill
-* `sensor.wn_<LOCATION_NAME>_uv_index` - the current UV index, ranging from 0 (very low) to 10 (very high)
-* `sensor.wn_<LOCATION_NAME>_weather_description` - the current weather description, e.g. "Freezing Rain" or "Scattered Showers"
-* `sensor.wn_<LOCATION_NAME>_wind_chill` - the current wind chill, which is what the current temperature "feels like" when combined with the current wind
-* `sensor.wn_<LOCATION_NAME>_wind_direction_cardinal` - the current cardinal wind direction - for example: North
-* `sensor.wn_<LOCATION_NAME>_wind_direction_degrees` - the current cardinal wind direction in degrees
-* `sensor.wn_<LOCATION_NAME>_wind_gust` - the current wind gust speed
-* `sensor.wn_<LOCATION_NAME>_wind_speed` - the current wind speed
-
-
-
-[Back to top](#top)
-
-# Localization
-
-Sensor "friendly names" are set via translation files.  
-Weather.com translation files are located in the 'weathernews/weather_translations' directory.
-Files were translated, using 'en.json' as the base, via https://translate.i18next.com.  
-Translations only use the base language code and not the variant (i.e. zh-CN/zh-HK/zh-TW uses zh).  
-The default is en-US (translations/en.json) if the lang: option is not set in the Weather.com config.  
-If lang: is set (i.e.  lang: de-DE), then the translations/de.json file is loaded, and the Weather.com API is queried with de-DE.    
-The translation file applies to all sensor friendly names.    
-Available lang: options are:  
-```
-'en-US', 'ko-KR'
-```
-Weather Entity translations are handled by Home Assistant and configured under the User -> Language setting.
+날씨 엔터티 외에도 이러한 추가 센서가 생성됩니다:
+* `sensor.wn_<LOCATION_NAME>_current_condition` - 지금날씨
+* `sensor.wn_<LOCATION_NAME>_day_condition` - 오전날씨
+* `sensor.wn_<LOCATION_NAME>_night_condition` - 오후날씨
+* `sensor.wn_<LOCATION_NAME>_dewpoint` - 이슬점
+* `sensor.wn_<LOCATION_NAME>_heat_index` - 열 지수
+* `sensor.wn_<LOCATION_NAME>_pressure` - 기압
+* `sensor.wn_<LOCATION_NAME>_relative_humidity` - 습도
+* `sensor.wn_<LOCATION_NAME>_temperature` - 온도
+* `sensor.wn_<LOCATION_NAME>_temperature_feels_like` - 체감온도
+* `sensor.wn_<LOCATION_NAME>_uv_index` - 자외선 지수 
+* `sensor.wn_<LOCATION_NAME>_wind_direction_cardinal` - 풍향
+* `sensor.wn_<LOCATION_NAME>_wind_gust` - 돌풍
+* `sensor.wn_<LOCATION_NAME>_wind_speed` - 풍속
+* `sensor.wn_<LOCATION_NAME>_sunrise` - 일출
+* `sensor.wn_<LOCATION_NAME>_sunset` - 일몰
+* `sensor.wn_<LOCATION_NAME>_pm10` - 미세먼지
+* `sensor.wn_<LOCATION_NAME>_pm10_grade` - 미세먼지 등급
+* `sensor.wn_<LOCATION_NAME>_pm25` - 초미세먼지
+* `sensor.wn_<LOCATION_NAME>_pm25_grade` - 초미세먼지 등급
+* `sensor.wn_<LOCATION_NAME>_day_short_comment` - 오늘 날씨 요약
+* `sensor.wn_<LOCATION_NAME>_next_day_short_comment` - 내일 날씨 요약
+* `sensor.wn_<LOCATION_NAME>_temp_diff_comment` - 어제와 기온차
+* `sensor.wn_<LOCATION_NAME>_precipitation_probability` - 강수확률
+* `sensor.wn_<LOCATION_NAME>_cai` - 통합대기등급
+  * https://en.wikipedia.org/wiki/Heat_index
+* `sensor.wn_<LOCATION_NAME>_weather_briefing` - 날씨보고
+* `sensor.wn_<LOCATION_NAME>_precip_hour_today` - 오늘 비 예보
+* `sensor.wn_<LOCATION_NAME>_precip_hour_today_tomarrow` - 오늘내일 비 예보
+* `sensor.wn_<LOCATION_NAME>_precip_3hour` - 지금부터 3시간 비 예보
+* `sensor.wn_<LOCATION_NAME>_precip_6hour` - 지금부터 6시간 비 예보
+* `sensor.wn_<LOCATION_NAME>_precip_9hour` - 지금부터 9시간 비 예보
+* `sensor.wn_<LOCATION_NAME>_precip_12hour` - 지금부터 12시간 비 예보
+* 비 예보 공통 속성 (오늘, 오늘내일, 3시간, 6시간, 9시간, 12시간)
+  * 'hour': '08', 시작시간
+  * 'prec': 3, 시작시간의 강수량
+  * 'pop': '80', 시작시간의 강수확률,
+  * 'cmt': "13시 비", 요약
+  * 'cmt2': '15시 까지 10mm', 요약2
+  * 'hour_limit': 9, 예보기간
+  * 'end_hour': '15', 첫 비 그치는 시간
+  * 'end_sum_prec': 10, 첫 비 그치는 시간 까지 강수량
+  * 'sum_prec': 12, 예보기간 동안의 총 강수량
+  * 'max_pop': '80', 예보기간 중 최대 강수확률
+  * 'snowrain': '비', 눈 비 구분
 
 [Back to top](#top)
+
+
