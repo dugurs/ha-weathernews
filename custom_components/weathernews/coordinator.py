@@ -312,12 +312,13 @@ class WeatherUpdateCoordinator(DataUpdateCoordinator):
                 end_hour = hour_data['hour']
                 end_sum_prec += float(hour_data[FIELD_PRECIPITATION])
         if sum_prec > 0:
+            end_sum_prec = round(end_sum_prec,1)
             data.update({
                 'cmt': cmt,
-                'cmt2': f"{end_hour}시 까지 {round(end_sum_prec,1)}mm",
+                'cmt2': f"{end_hour}시 까지 {int(end_sum_prec) if end_sum_prec == int(end_sum_prec) else end_sum_prec}mm",
                 'hourlimit': limit,
                 'end_hour': end_hour,
-                'end_sum_prec': round(end_sum_prec,1),
+                'end_sum_prec': end_sum_prec,
                 'sum_prec': round(sum_prec,1),
                 'max_pop': max_pop,
                 'snowrain': snowrain,
