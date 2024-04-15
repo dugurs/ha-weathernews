@@ -314,11 +314,11 @@ class WeatherUpdateCoordinator(DataUpdateCoordinator):
         if sum_prec > 0:
             data.update({
                 'cmt': cmt,
-                'cmt2': f"{end_hour}시 까지 {end_sum_prec}mm",
+                'cmt2': f"{end_hour}시 까지 {round(end_sum_prec,1)}mm",
                 'hourlimit': limit,
                 'end_hour': end_hour,
-                'end_sum_prec': end_sum_prec,
-                'sum_prec': sum_prec,
+                'end_sum_prec': round(end_sum_prec,1),
+                'sum_prec': round(sum_prec,1),
                 'max_pop': max_pop,
                 'snowrain': snowrain,
             })
