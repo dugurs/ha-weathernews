@@ -46,15 +46,19 @@ HACS를 사용해 설치 합니다.
 1. 통합구성요소 설치
    
    * [![Open your Home Assistant instance and show the add add-on repository dialog with a specific repository URL pre-filled.](https://my.home-assistant.io/badges/supervisor_add_addon_repository.svg)](https://my.home-assistant.io/redirect/supervisor_add_addon_repository/?repository_url=https%3A%2F%2Fgithub.com%2Fdugurs%2Fha-weathernews)
-   * HACS > Integretions > 우측상단 메뉴 > Custom repositories 선택<br>
-      `https://github.com/dugurs/ha-weathernews` 주소 입력, Category에 'integration' 선택 후, 저장<br>
+   * HACS > Integretions > 우측상단 메뉴 > Custom repositories 선택
+   
+      `https://github.com/dugurs/ha-weathernews` 주소 입력, Category에 'integration' 선택 후, 저장
+      
       HACS > Integretions > EXPLORE & DOWNLOAD REPOSITORIES > sesrch `웨더뉴스` > DOWNLOAD
 
 2. 통합구성요서 설정추가
    
    * [![Open your Home Assistant instance and start setting up a new integration.](https://my.home-assistant.io/badges/config_flow_start.svg)](https://my.home-assistant.io/redirect/config_flow_start/?domain=weathernews)
-   * 설정 > 기기 및 서비 > 통합구성요소 추가하기 > `웨더뉴스 WeatherNews`<br>
-      https://www.kr-weathernews.com/ 접속 > 도시검색 > 도시 선택<br>
+   * 설정 > 기기 및 서비 > 통합구성요소 추가하기 > `웨더뉴스 WeatherNews`
+   
+      https://www.kr-weathernews.com/ 접속 > 도시검색 > 도시 선택
+      
       주소표시줄 ?region=XXXXXXXXXX의 XXXXXXXXXX 숫자를 "지역코드"에 넣기
 
 [Back to top](#top)
@@ -63,18 +67,18 @@ HACS를 사용해 설치 합니다.
 <br>
 
 # 생성되는 날씨 및 센서
-날씨 엔터티는 `weather.wn_<LOCATION_NAME>`과 같이 생성되고 매일, 매일2외, 매시 가 예보됩니다. 
+날씨 엔터티는 `weather.wn_<LOCATION_NAME>`과 같이 생성되고 매일, 매일2회, 매시 가 예보됩니다. 
 
 날씨 엔터티 외에도 이러한 추가 센서가 생성됩니다:
 * `sensor.wn_<LOCATION_NAME>_current_condition` - 지금날씨
 * `sensor.wn_<LOCATION_NAME>_day_condition` - 오전날씨
 * `sensor.wn_<LOCATION_NAME>_night_condition` - 오후날씨
-* `sensor.wn_<LOCATION_NAME>_dewpoint` - 이슬점
-* `sensor.wn_<LOCATION_NAME>_heat_index` - 열 지수
-* `sensor.wn_<LOCATION_NAME>_pressure` - 기압
 * `sensor.wn_<LOCATION_NAME>_relative_humidity` - 습도
 * `sensor.wn_<LOCATION_NAME>_temperature` - 온도
 * `sensor.wn_<LOCATION_NAME>_temperature_feels_like` - 체감온도
+* `sensor.wn_<LOCATION_NAME>_dewpoint` - 이슬점
+* `sensor.wn_<LOCATION_NAME>_heat_index` - 열 지수
+* `sensor.wn_<LOCATION_NAME>_pressure` - 기압
 * `sensor.wn_<LOCATION_NAME>_uv_index` - 자외선 지수 
 * `sensor.wn_<LOCATION_NAME>_wind_direction_cardinal` - 풍향
 * `sensor.wn_<LOCATION_NAME>_wind_gust` - 돌풍
