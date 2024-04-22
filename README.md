@@ -86,9 +86,9 @@ HACS를 사용해 설치 합니다.
 * `sensor.wn_<LOCATION_NAME>_sunrise` - 일출
 * `sensor.wn_<LOCATION_NAME>_sunset` - 일몰
 * `sensor.wn_<LOCATION_NAME>_pm10` - 미세먼지
-* `sensor.wn_<LOCATION_NAME>_pm10_grade` - 미세먼지 등급
+* `sensor.wn_<LOCATION_NAME>_pm10_description` - 미세먼지 등급
 * `sensor.wn_<LOCATION_NAME>_pm25` - 초미세먼지
-* `sensor.wn_<LOCATION_NAME>_pm25_grade` - 초미세먼지 등급
+* `sensor.wn_<LOCATION_NAME>_pm25_description` - 초미세먼지 등급
 * `sensor.wn_<LOCATION_NAME>_day_short_comment` - 오늘 날씨 요약
 * `sensor.wn_<LOCATION_NAME>_next_day_short_comment` - 내일 날씨 요약
 * `sensor.wn_<LOCATION_NAME>_temp_diff_comment` - 어제와 기온차
@@ -114,6 +114,10 @@ HACS를 사용해 설치 합니다.
   * 'sum_prec': 12, 예보기간 동안의 총 강수량
   * 'max_pop': '80', 예보기간 중 최대 강수확률
   * 'snowrain': '비', 눈 비 구분
+
+
+갱신 주기는 20분 입니다.
+미세먼지, 초미세먼지는 1시간 주기로 갱신됩니다.
 
 [Back to top](#top)
 
