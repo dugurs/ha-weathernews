@@ -179,21 +179,21 @@ class WeatherUpdateCoordinator(DataUpdateCoordinator):
             # 통합대기 지수
             khai = int(result_data3['aq']['khai'])
             if khai < 50:
-                khaigrade = '좋음'
+                khaiDesc = '좋음'
             elif khai < 100:
-                khaigrade = '보통'
+                khaiDesc = '보통'
             elif khai < 250:
-                khaigrade = '나쁨'
+                khaiDesc = '나쁨'
             elif khai < 500:
-                khaigrade = '매우나쁨'
+                khaiDesc = '매우나쁨'
             else:
-                khaigrade = ''
+                khaiDesc = ''
 
             # 통합대기 속성추가
             result_data3['aq'].update({
-                'pm10grade': result_data2[0]['air']['pm10']['description'],
-                'pm25grade': result_data2[0]['air']['pm25']['description'],
-                'khaigrade': khaigrade
+                'pm10Desc': result_data2[0]['air']['pm10']['description'],
+                'pm25Desc': result_data2[0]['air']['pm25']['description'],
+                'khaiDesc': khaiDesc
             })
 
             # 열지수
@@ -203,13 +203,13 @@ class WeatherUpdateCoordinator(DataUpdateCoordinator):
             weather_briefing['현재 날씨'] = f"현재 날씨 {result_data2[0]['cur_cmt']}"
             weather_briefing['온도'] = f"온도 {result_data['current'][FIELD_TEMP]}°C"
             weather_briefing['어제와 온도차'] = tempdiffCmt
-            weather_briefing['최고 온도'] = f"최고 {result_data['current'][FIELD_TEMPERATUREMAX]}°C" if datetime.now().hour >= 15 else ''
+            weather_briefing['최고 온도'] = f"최고 {result_data['current'][FIELD_TEMPERATUREMAX]}°C" if datetime.now().hour <= 14 else ''
             weather_briefing['습도'] = f"습도 {result_data['current'][FIELD_HUMIDITY]}%"
             weather_briefing['강수확률'] = f"강수확률 {precipHour12Attr['max_pop']}%" if precipHour12Attr['cmt'] != '안옴' else ''
             weather_briefing['강수예상'] = f"{precipHour12Attr['cmt']}, {precipHour12Attr['cmt2']} 예상" if precipHour12Attr['cmt'] != '안옴' else ''
             weather_briefing['미세먼지'] = f"미세먼지 {result_data2[0]['air']['pm10']['description']}"
             weather_briefing['초미세먼지'] = f"초미세먼지 {result_data2[0]['air']['pm25']['description']}"
-            weather_briefing['통합대기'] = f"통합대기 {result_data3['aq']['khaigrade']}"
+            weather_briefing['통합대기'] = f"통합대기 {result_data3['aq']['khaiDesc']}"
             weather_briefing_str = [str(value) for value in weather_briefing.values() if value]
             weather_briefing_join = ", ".join(weather_briefing_str) + "입니다."
 
@@ -224,8 +224,10 @@ class WeatherUpdateCoordinator(DataUpdateCoordinator):
                 'night_cmt': result_data2[0]['daily'][0]['night_cmt'],
                 'dayShortCmt': result_data2[0]['daily'][0]['dayShortCmt'],
                 'nextDayShortCmt': result_data2[0]['daily'][0]['nextDayShortCmt'],
-                'pm10grade': result_data2[0]['air']['pm10']['description'],
-                'pm25grade': result_data2[0]['air']['pm25']['description'],
+                'pm10Attr': result_data2[0]['air']['pm10'],
+                'pm25Attr': result_data2[0]['air']['pm25'],
+                'pm10Desc': result_data2[0]['air']['pm10']['description'],
+                'pm25Desc': result_data2[0]['air']['pm25']['description'],
                 'heatindex': heatIndex['heatindex'],
                 'heatindexAttr': heatIndex,
                 'khai': result_data3['aq']['khai'],
