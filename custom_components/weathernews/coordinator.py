@@ -202,8 +202,9 @@ class WeatherUpdateCoordinator(DataUpdateCoordinator):
             weather_briefing = {}
             weather_briefing['현재 날씨'] = f"현재 날씨 {result_data2[0]['cur_cmt']}"
             weather_briefing['온도'] = f"온도 {result_data['current'][FIELD_TEMP]}°C"
-            weather_briefing['어제와 온도차'] = tempdiffCmt
+            # weather_briefing['최저 온도'] = f"최저 {result_data['current'][FIELD_TEMPERATUREMIN]}°C" if datetime.now().hour <= 10 else ''
             weather_briefing['최고 온도'] = f"최고 {result_data['current'][FIELD_TEMPERATUREMAX]}°C" if datetime.now().hour <= 14 else ''
+            weather_briefing['어제와 온도차'] = tempdiffCmt
             weather_briefing['습도'] = f"습도 {result_data['current'][FIELD_HUMIDITY]}%"
             weather_briefing['강수확률'] = f"강수확률 {precipHour12Attr['max_pop']}%" if precipHour12Attr['cmt'] != '안옴' else ''
             weather_briefing['강수예상'] = f"{precipHour12Attr['cmt']}, {precipHour12Attr['cmt2']} 예상" if precipHour12Attr['cmt'] != '안옴' else ''
