@@ -11,6 +11,7 @@ from typing import Any
 import aiohttp
 import async_timeout
 import re
+import copy
 
 from homeassistant.core import HomeAssistant
 from homeassistant.exceptions import HomeAssistantError
@@ -200,19 +201,30 @@ class WeatherUpdateCoordinator(DataUpdateCoordinator):
             heatIndex = heatIndexCalc(result_data['current'][FIELD_TEMP], result_data['current'][FIELD_HUMIDITY])
             
             hour = int(result_data['hourly'][0]['hour'])
+            mon = int(result_data['hourly'][0]['mon'])
             weather_briefing = {}
             weather_briefing['현재 날씨'] = f"현재 날씨 {result_data2[0]['cur_cmt']}"
             weather_briefing['온도'] = f"온도 {result_data['current'][FIELD_TEMP]}°C"
-            # weather_briefing['최저 온도'] = f"최저 {result_data['current'][FIELD_TEMPERATUREMIN]}°C" if hour <= 10 else ''
-            weather_briefing['최고 온도'] = f"최고 {result_data['current'][FIELD_TEMPERATUREMAX]}°C" if hour <= 14 else ''
             weather_briefing['어제와 온도차'] = tempdiffCmt
+            weather_briefing['최저 온도'] = f"최저 {result_data['current'][FIELD_TEMPERATUREMIN]}°C"
+            weather_briefing['최고 온도'] = f"최고 {result_data['current'][FIELD_TEMPERATUREMAX]}°C"
             weather_briefing['습도'] = f"습도 {result_data['current'][FIELD_HUMIDITY]}%"
-            weather_briefing['강수확률'] = f"강수확률 {precipHour12Attr['max_pop']}%" if precipHour12Attr['cmt'] != '안옴' else ''
-            weather_briefing['강수예상'] = f"{precipHour12Attr['cmt']}, {precipHour12Attr['cmt2']} 예상" if precipHour12Attr['cmt'] != '안옴' else ''
+            weather_briefing['강수확률'] = f"강수확률 {precipHour12Attr['max_pop']}%"
+            weather_briefing['강수예상'] = f"{precipHour12Attr['cmt']}, {precipHour12Attr['cmt2']} 예상"
             weather_briefing['미세먼지'] = f"미세먼지 {result_data2[0]['air']['pm10']['description']}"
             weather_briefing['초미세먼지'] = f"초미세먼지 {result_data2[0]['air']['pm25']['description']}"
             weather_briefing['통합대기'] = f"통합대기 {result_data3['aq']['khaiDesc']}"
-            weather_briefing_str = [str(value) for value in weather_briefing.values() if value]
+
+            weather_briefing_cmt = copy.deepcopy(weather_briefing)
+            if mon not in [11,12,1,2] or hour > 10:
+                del weather_briefing_cmt['최저 온도']
+            if hour > 14:
+                del weather_briefing_cmt['최고 온도']
+            if precipHour12Attr['cmt'] == '안옴':
+                del weather_briefing_cmt['강수확률']
+                del weather_briefing_cmt['강수예상']
+
+            weather_briefing_str = [str(value) for value in weather_briefing_cmt.values() if value]
             weather_briefing_join = ", ".join(weather_briefing_str) + "입니다."
 
             # 현재날씨 속성추가
