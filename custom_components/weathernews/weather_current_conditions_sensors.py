@@ -280,6 +280,14 @@ current_condition_sensor_descriptions = [
         value_fn=lambda data, _: cast(str, data),
     ),
     WeatherSensorEntityDescription(
+        key="pmForcast",
+        name="pm Forcast",
+        icon="mdi:blur",
+        unit_fn=lambda metric: CONCENTRATION_MICROGRAMS_PER_CUBIC_METER,
+        value_fn=lambda data, _: cast(float, data),
+        attr_key=['pmForcastDaily','pmForcastHourly'],
+    ),
+    WeatherSensorEntityDescription(
         key="cur_cmt",
         name="current condition",
         icon="mdi:cloud-question-outline",

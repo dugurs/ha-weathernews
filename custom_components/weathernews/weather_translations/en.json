@@ -24,6 +24,7 @@
   "pm25": "PM 2.5",
   "pm10Desc": "PM 10 description",
   "pm25Desc": "PM 2.5 description",
+  "pmForcast": "PM Forcast",
   "cur_cmt": "Current condition",
   "day_cmt": "Day condition",
   "night_cmt": "Night condition",

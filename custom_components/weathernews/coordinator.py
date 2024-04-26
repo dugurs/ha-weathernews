@@ -153,7 +153,6 @@ class WeatherUpdateCoordinator(DataUpdateCoordinator):
             with async_timeout.timeout(10):
                 """통합대기등급"""
                 # https://www.kr-weathernews.com/mv3/if/main2_v2.fcgi?lat=37.544147&lon=126.8357822
-                # https://www.kr-weathernews.com/mv3/if/pm_v4.fcgi?loc=1147010300
                 url = self._build_url(f"https://www.kr-weathernews.com/mv3/if/main2_v2.fcgi?lat={lat}&lon={lon}")
                 response = await self._session.get(url, headers=headers)
                 result_data3 = await response.json(content_type=None)
@@ -167,6 +166,40 @@ class WeatherUpdateCoordinator(DataUpdateCoordinator):
                 else:
                     tempdiffCmt = "어제보다 {}도 {}아요".format(abs(tempdiff), "높" if tempdiff > 0 else "낮")
 
+            pmForcastDaily = []
+            pmForcastHourly = []
+
+            with async_timeout.timeout(10):
+                """미세먼지예보"""
+                # https://www.kr-weathernews.com/mv3/if/pm_v4.fcgi?loc=1147010300
+                url = self._build_url("https://www.kr-weathernews.com/mv3/if/pm_v4.fcgi?loc={apiKey}")
+                response = await self._session.get(url, headers=headers)
+                result_data4 = await response.json(content_type=None)
+
+                if result_data4 is None:
+                    raise ValueError('NO RESULT4')
+                self._check_errors(url, result_data4)
+                
+                # new_item = {'date': datetime.strptime(result_data2[0]['publish_TimeLocal'], "%Y/%m/%dT%H:%M:%S%z").strftime("%Y-%m-%d %H:%M:%S"), 'pm10': result_data2[0]['air']['pm10']['value'], 'pm25': result_data2[0]['air']['pm25']['value']}
+                # pmForcastDaily.append(new_item)
+                # pmForcastHourly.append(new_item)
+                for item in result_data4['pm']['forcast']['daily']:
+                    new_item = {
+                        "date": f'{item["year"]}-{item["mon"]:02d}-{item["day"]:02d} 00:00:00',
+                        "pm10": item["pm10"],
+                        "aqi": item["aqi"],
+                        "pm25": item["pm25"],
+                        "o3": item["o3"]
+                    }
+                    pmForcastDaily.append(new_item)
+
+                for item in result_data4['pm']['forcast']['hourly']:
+                    new_item = {
+                        "date": f'{item["year"]}-{item["mon"]:02d}-{item["day"]:02d} {item["hour"]:02d}:00:00',
+                        "pm10": item["pm10"],
+                        "pm25": item["pm25"]
+                    }
+                    pmForcastHourly.append(new_item)
 
             # 비시작시간
             remainhour = 24 - int(result_data['hourly'][0]['hour']) 
@@ -261,7 +294,10 @@ class WeatherUpdateCoordinator(DataUpdateCoordinator):
                 'precipHour12': precipHour12Attr['cmt'],
                 'precipHour12Attr': precipHour12Attr,
                 'weatherBriping': weather_briefing_join,
-                'weatherBripingAttr': weather_briefing
+                'weatherBripingAttr': weather_briefing,
+                'pmForcast': result_data4['pm']['forcast']['hourly'][0]['pm10'],
+                'pmForcastDaily': pmForcastDaily,
+                'pmForcastHourly': pmForcastHourly
             })
             
             result = {
