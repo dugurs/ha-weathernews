@@ -183,23 +183,26 @@ class WeatherUpdateCoordinator(DataUpdateCoordinator):
                 # new_item = {'date': datetime.strptime(result_data2[0]['publish_TimeLocal'], "%Y/%m/%dT%H:%M:%S%z").strftime("%Y-%m-%d %H:%M:%S"), 'pm10': result_data2[0]['air']['pm10']['value'], 'pm25': result_data2[0]['air']['pm25']['value']}
                 # pmForcastDaily.append(new_item)
                 # pmForcastHourly.append(new_item)
-                for item in result_data4['pm']['forcast']['daily']:
-                    new_item = {
-                        "date": f'{item["year"]}-{item["mon"]:02d}-{item["day"]:02d} 00:00:00',
-                        "pm10": item["pm10"],
-                        "aqi": item["aqi"],
-                        "pm25": item["pm25"],
-                        "o3": item["o3"]
+                for pm in result_data4['pm']['forcast']['daily']:
+                    new_pm = {
+                        "date": f'{pm["year"]}-{pm["mon"]:02d}-{pm["day"]:02d} 00:00:00',
+                        "pm10": pm["pm10"],
+                        "pm25": pm["pm25"],
+                        "aqi": pm["aqi"],
+                        "o3": pm["o3"],
+                        "pm10Desc": self._range_desc([30,80,150], pm["pm10"]),
+                        "pm25Desc": self._range_desc([15,35,75], pm["pm25"]),
+                        "aqiDesc": self._range_desc([50,100,250], pm["aqi"]),
                     }
-                    pmForcastDaily.append(new_item)
+                    pmForcastDaily.append(new_pm)
 
-                for item in result_data4['pm']['forcast']['hourly']:
-                    new_item = {
-                        "date": f'{item["year"]}-{item["mon"]:02d}-{item["day"]:02d} {item["hour"]:02d}:00:00',
-                        "pm10": item["pm10"],
-                        "pm25": item["pm25"]
+                for pm in result_data4['pm']['forcast']['hourly']:
+                    new_pm = {
+                        "date": f'{pm["year"]}-{pm["mon"]:02d}-{pm["day"]:02d} {pm["hour"]:02d}:00:00',
+                        "pm10": pm["pm10"],
+                        "pm25": pm["pm25"]
                     }
-                    pmForcastHourly.append(new_item)
+                    pmForcastHourly.append(new_pm)
 
             # 비시작시간
             remainhour = 24 - int(result_data['hourly'][0]['hour']) 
@@ -210,24 +213,11 @@ class WeatherUpdateCoordinator(DataUpdateCoordinator):
             precipHour9Attr = self._get_precip_hour(result_data['hourly'], 9, result_data['daily'][0]['day']) # 9시간
             precipHour12Attr = self._get_precip_hour(result_data['hourly'], 12, result_data['daily'][0]['day']) # 12시간
 
-            # 통합대기 지수
-            khai = int(result_data3['aq']['khai'])
-            if khai < 50:
-                khaiDesc = '좋음'
-            elif khai < 100:
-                khaiDesc = '보통'
-            elif khai < 250:
-                khaiDesc = '나쁨'
-            elif khai < 500:
-                khaiDesc = '매우나쁨'
-            else:
-                khaiDesc = ''
-
             # 통합대기 속성추가
             result_data3['aq'].update({
                 'pm10Desc': result_data2[0]['air']['pm10']['description'],
                 'pm25Desc': result_data2[0]['air']['pm25']['description'],
-                'khaiDesc': khaiDesc
+                'khaiDesc': self._range_desc([50,100,250], result_data3['aq']['khai'])
             })
 
             # 열지수
@@ -317,6 +307,14 @@ class WeatherUpdateCoordinator(DataUpdateCoordinator):
             _LOGGER.error("Error fetching Weather data: %s", repr(err))
             raise UpdateFailed(err)
         # _LOGGER.debug(f'Weather data {self.data}')
+
+    def _range_desc(self, range1, value):
+        value = int(value)
+        desc = ['좋음','보통','나쁨','매우나쁨']
+        for i in range(len(range1)):
+            if value < range1[i]:
+                return desc[i]
+        return desc[3]
 
     def _build_url(self, baseurl):
         return baseurl.format(
