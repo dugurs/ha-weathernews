@@ -114,6 +114,7 @@ current_condition_sensor_descriptions = [
         device_class=SensorDeviceClass.TEMPERATURE,
         unit_fn=lambda metric: UnitOfTemperature.CELSIUS if metric else UnitOfTemperature.FAHRENHEIT,
         value_fn=lambda data, _: cast(float, data),
+        attr_key=['tmin','tmax'],
     ),
     WeatherSensorEntityDescription(
         key="heatindex",
