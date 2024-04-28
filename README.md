@@ -114,6 +114,7 @@ HACS를 사용해 설치 합니다.
   * 'sum_prec': 12, 예보기간 동안의 총 강수량
   * 'max_pop': '80', 예보기간 중 최대 강수확률
   * 'snowrain': '비', 눈 비 구분
+* `sensor.wn_<LOCATION_NAME>_pm_forcast` - 미세먼지 예보(속성)
 
 
 갱신 주기는 20분 입니다.
