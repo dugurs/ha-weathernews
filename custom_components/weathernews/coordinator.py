@@ -9,6 +9,8 @@ import logging
 from typing import Any
 
 import aiohttp
+import aiofiles
+import json
 import async_timeout
 import re
 import copy
@@ -17,7 +19,7 @@ from homeassistant.core import HomeAssistant
 from homeassistant.exceptions import HomeAssistantError
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
-from homeassistant.util import json
+# from homeassistant.util import json
 from homeassistant.util.unit_system import METRIC_SYSTEM
 from homeassistant.const import (
     PERCENTAGE, UnitOfPressure, UnitOfTemperature, UnitOfLength, UnitOfSpeed, UnitOfVolumetricFlux)
@@ -80,7 +82,8 @@ class WeatherUpdateCoordinator(DataUpdateCoordinator):
         self._lang = config.lang
         self.data = None
         self._session = async_get_clientsession(self._hass)
-        self._tranfile = self.get_tran_file()
+        self._tranfile = None
+        asyncio.create_task(self.async_init())
 
         if self._unit_system_api == 'm':
             self.units_of_measurement = (UnitOfTemperature.CELSIUS, UnitOfLength.MILLIMETERS, UnitOfLength.METERS,
@@ -435,14 +438,16 @@ class WeatherUpdateCoordinator(DataUpdateCoordinator):
     def _format_timestamp(cls, timestamp_secs):
         return datetime.utcfromtimestamp(timestamp_secs).isoformat('T') + 'Z'
 
-    def get_tran_file(self):
-        """get translation file for Weather.com sensor friendly_name"""
+    async def async_init(self):
+        self._tranfile = await self.get_tran_file()
+
+    async def get_tran_file(self):
         tfiledir = f'{self._hass.config.config_dir}/custom_components/{DOMAIN}/weather_translations/'
         tfilename = self._lang.split('-', 1)[0]
         try:
-            tfiledata = json.load_json(f'{tfiledir}{tfilename}.json')
+            tfiledata = await load_json_async(f'{tfiledir}{tfilename}.json')
         except Exception:  # pylint: disable=broad-except
-            tfiledata = json.load_json(f'{tfiledir}en.json')
+            tfiledata = await load_json_async(f'{tfiledir}en.json')
             _LOGGER.warning(f'Sensor translation file {tfilename}.json does not exist. Defaulting to en-US.')
         return tfiledata
 
@@ -451,6 +456,11 @@ class WeatherUpdateCoordinator(DataUpdateCoordinator):
         if key in self._tranfile.keys():
             return self._tranfile[key]
         return key
+
+async def load_json_async(filename):
+    async with aiofiles.open(filename, mode='r') as f:
+        data = await f.read()
+        return json.loads(data)
 
 class InvalidApiKey(HomeAssistantError):
     """Error to indicate there is an invalid api key."""
