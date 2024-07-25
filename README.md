@@ -45,7 +45,7 @@ HACS를 사용해 설치 합니다.
 
 1. 통합구성요소 설치
    
-   * [![Open your Home Assistant instance and show the add add-on repository dialog with a specific repository URL pre-filled.](https://my.home-assistant.io/badges/supervisor_add_addon_repository.svg)](https://my.home-assistant.io/redirect/supervisor_add_addon_repository/?repository_url=https%3A%2F%2Fgithub.com%2Fdugurs%2Fha-weathernews)
+   * [![Open your Home Assistant instance and open a repository inside the Home Assistant Community Store.](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?repository=ha-weathernews&owner=dugurs&category=integration)
    * HACS > Integretions > 우측상단 메뉴 > Custom repositories 선택
    
       `https://github.com/dugurs/ha-weathernews` 주소 입력, Category에 'integration' 선택 후, 저장
