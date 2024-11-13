@@ -58,7 +58,7 @@ ICON_CONDITION_MAP: Final[dict[str, list[int]]] = {
     ATTR_CONDITION_HAIL: [],            # 빗발
     ATTR_CONDITION_LIGHTNING: [],       # 번개/뇌우
     ATTR_CONDITION_LIGHTNING_RAINY: [], # 번개/천둥, 비
-    ATTR_CONDITION_PARTLYCLOUDY: [101, 102, 201, 202],    # 구름 몇 개 
+    ATTR_CONDITION_PARTLYCLOUDY: [101, 102, 104, 201, 202],    # 구름 몇 개 
     ATTR_CONDITION_POURING: [],         # 쏟아지는 비
     ATTR_CONDITION_RAINY: [300, 302],        # 비
     ATTR_CONDITION_SNOWY: [204, 400],           # 눈
