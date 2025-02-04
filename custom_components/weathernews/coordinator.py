@@ -9,7 +9,7 @@ import logging
 from typing import Any
 
 import aiohttp
-import aiofiles
+import asyncio
 import json
 import async_timeout
 import re
@@ -458,9 +458,9 @@ class WeatherUpdateCoordinator(DataUpdateCoordinator):
         return key
 
 async def load_json_async(filename):
-    async with aiofiles.open(filename, mode='r') as f:
-        data = await f.read()
-        return json.loads(data)
+    loop = asyncio.get_event_loop()
+    contents = await loop.run_in_executor(None, lambda: open(filename, mode='r', encoding='utf-8').read())
+    return json.loads(contents)
 
 class InvalidApiKey(HomeAssistantError):
     """Error to indicate there is an invalid api key."""

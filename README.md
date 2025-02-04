@@ -14,7 +14,6 @@ weatherdotcom을 fork해 만들어졌습니다. [weatherdotcom integration by @j
 # 설치 구성요소
 아래의 최소 요구 사항을 충족해야 설치 가능합니다. 
 
-- Home Assistant 버전 2023.9 이상이 필요합니다
 
 <br>
 <br>
