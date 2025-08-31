@@ -1,9 +1,9 @@
 # 웨더뉴스 Weathernews
-Home Assistant 커스텀 컴포넌트 for Weathernews 
+Home Assistant 커스텀 컴포넌트 for Weathernews
 
 weatherdotcom을 fork해 만들어졌습니다. [weatherdotcom integration by @jaydeethree](https://github.com/jaydeethree/Home-Assistant-weatherdotcom)
 
-* **kr-weathernews.com 날씨 데이타를 사용합니다. 날씨 데이타 저작권은 모두 `Weathernews`에 있습니다**
+* **kr-weathernews.com 날씨 데이터를 사용합니다. 날씨 데이터 저작권은 모두 `Weathernews`에 있습니다**
 * **개인(본인 또는 그 동거 가족)이 사적 이용 목적에 한해 사용가능합니다!**
 
 -------------------
@@ -30,7 +30,7 @@ weatherdotcom을 fork해 만들어졌습니다. [weatherdotcom integration by @j
 
 ![khai](images/screenshot/khai.png)
 
-![weather birefing](images/screenshot/weather_birefing.png)
+![weather briefing](images/screenshot/weather_briefing.png)
 
 
 [Back to top](#top)
@@ -45,16 +45,16 @@ HACS를 사용해 설치 합니다.
 1. 통합구성요소 설치
    
    * [![Open your Home Assistant instance and open a repository inside the Home Assistant Community Store.](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?repository=ha-weathernews&owner=dugurs&category=integration)
-   * HACS > Integretions > 우측상단 메뉴 > Custom repositories 선택
+   * HACS > Integrations > 우측상단 메뉴 > Custom repositories 선택
    
       `https://github.com/dugurs/ha-weathernews` 주소 입력, Category에 'integration' 선택 후, 저장
       
-      HACS > Integretions > EXPLORE & DOWNLOAD REPOSITORIES > sesrch `웨더뉴스` > DOWNLOAD
+      HACS > Integrations > EXPLORE & DOWNLOAD REPOSITORIES > search `웨더뉴스` > DOWNLOAD
 
-2. 통합구성요서 설정추가
+2. 통합구성요소 설정추가
    
    * [![Open your Home Assistant instance and start setting up a new integration.](https://my.home-assistant.io/badges/config_flow_start.svg)](https://my.home-assistant.io/redirect/config_flow_start/?domain=weathernews)
-   * 설정 > 기기 및 서비 > 통합구성요소 추가하기 > `웨더뉴스 WeatherNews`
+   * 설정 > 기기 및 서비스 > 통합구성요소 추가하기 > `웨더뉴스 WeatherNews`
    
       https://www.kr-weathernews.com/ 접속 > 도시검색 > 도시 선택
       
