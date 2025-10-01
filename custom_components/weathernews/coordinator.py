@@ -186,7 +186,7 @@ class WeatherUpdateCoordinator(DataUpdateCoordinator):
                 # new_item = {'date': datetime.strptime(result_data2[0]['publish_TimeLocal'], "%Y/%m/%dT%H:%M:%S%z").strftime("%Y-%m-%d %H:%M:%S"), 'pm10': result_data2[0]['air']['pm10']['value'], 'pm25': result_data2[0]['air']['pm25']['value']}
                 # pmForecastDaily.append(new_item)
                 # pmForecastHourly.append(new_item)
-                for pm in result_data4['pm']['forecast']['daily']:
+                for pm in result_data4['pm']['forcast']['daily']:
                     new_pm = {
                         "date": f'{pm["year"]}-{pm["mon"]:02d}-{pm["day"]:02d} 00:00:00',
                         "pm10": pm["pm10"],
@@ -199,7 +199,7 @@ class WeatherUpdateCoordinator(DataUpdateCoordinator):
                     }
                     pmForecastDaily.append(new_pm)
 
-                for pm in result_data4['pm']['forecast']['hourly']:
+                for pm in result_data4['pm']['forcast']['hourly']:
                     new_pm = {
                         "date": f'{pm["year"]}-{pm["mon"]:02d}-{pm["day"]:02d} {pm["hour"]:02d}:00:00',
                         "pm10": pm["pm10"],
@@ -288,7 +288,7 @@ class WeatherUpdateCoordinator(DataUpdateCoordinator):
                 'precipHour12Attr': precipHour12Attr,
                 'weatherBriping': weather_briefing_join,
                 'weatherBripingAttr': weather_briefing,
-                'pmForecast': result_data4['pm']['forecast']['hourly'][0]['pm10'],
+                'pmForecast': result_data4['pm']['forcast']['hourly'][0]['pm10'],
                 'pmForecastDaily': pmForecastDaily,
                 'pmForecastHourly': pmForecastHourly
             })
