@@ -169,8 +169,8 @@ class WeatherUpdateCoordinator(DataUpdateCoordinator):
                 else:
                     tempdiffCmt = "어제보다 {}도 {}아요".format(abs(tempdiff), "높" if tempdiff > 0 else "낮")
 
-            pmForcastDaily = []
-            pmForcastHourly = []
+            pmForecastDaily = []
+            pmForecastHourly = []
 
             with async_timeout.timeout(10):
                 """미세먼지예보"""
@@ -184,9 +184,9 @@ class WeatherUpdateCoordinator(DataUpdateCoordinator):
                 self._check_errors(url, result_data4)
                 
                 # new_item = {'date': datetime.strptime(result_data2[0]['publish_TimeLocal'], "%Y/%m/%dT%H:%M:%S%z").strftime("%Y-%m-%d %H:%M:%S"), 'pm10': result_data2[0]['air']['pm10']['value'], 'pm25': result_data2[0]['air']['pm25']['value']}
-                # pmForcastDaily.append(new_item)
-                # pmForcastHourly.append(new_item)
-                for pm in result_data4['pm']['forcast']['daily']:
+                # pmForecastDaily.append(new_item)
+                # pmForecastHourly.append(new_item)
+                for pm in result_data4['pm']['forecast']['daily']:
                     new_pm = {
                         "date": f'{pm["year"]}-{pm["mon"]:02d}-{pm["day"]:02d} 00:00:00',
                         "pm10": pm["pm10"],
@@ -197,20 +197,20 @@ class WeatherUpdateCoordinator(DataUpdateCoordinator):
                         "pm25Desc": self._range_desc([15,35,75], pm["pm25"]),
                         "aqiDesc": self._range_desc([50,100,250], pm["aqi"]),
                     }
-                    pmForcastDaily.append(new_pm)
+                    pmForecastDaily.append(new_pm)
 
-                for pm in result_data4['pm']['forcast']['hourly']:
+                for pm in result_data4['pm']['forecast']['hourly']:
                     new_pm = {
                         "date": f'{pm["year"]}-{pm["mon"]:02d}-{pm["day"]:02d} {pm["hour"]:02d}:00:00',
                         "pm10": pm["pm10"],
                         "pm25": pm["pm25"]
                     }
-                    pmForcastHourly.append(new_pm)
+                    pmForecastHourly.append(new_pm)
 
             # 비시작시간
             remainhour = 24 - int(result_data['hourly'][0]['hour']) 
             precipHourTodayAttr = self._get_precip_hour(result_data['hourly'], remainhour) # 오늘 
-            precipHourTomarrowAttr = self._get_precip_hour(result_data['hourly'], remainhour+24, result_data['daily'][0]['day']) # 내일까지
+            precipHourTomorrowAttr = self._get_precip_hour(result_data['hourly'], remainhour+24, result_data['daily'][0]['day']) # 내일까지
             precipHour3Attr = self._get_precip_hour(result_data['hourly'], 3, result_data['daily'][0]['day']) # 3시간
             precipHour6Attr = self._get_precip_hour(result_data['hourly'], 6, result_data['daily'][0]['day']) # 6시간
             precipHour9Attr = self._get_precip_hour(result_data['hourly'], 9, result_data['daily'][0]['day']) # 9시간
@@ -276,8 +276,8 @@ class WeatherUpdateCoordinator(DataUpdateCoordinator):
                 'tempdiffCmt': tempdiffCmt,
                 'precipHourToday': precipHourTodayAttr['cmt'],
                 'precipHourTodayAttr': precipHourTodayAttr,
-                'precipHourTomarrow': precipHourTomarrowAttr['cmt'],
-                'precipHourTomarrowAttr': precipHourTomarrowAttr,
+                'precipHourTomorrow': precipHourTomorrowAttr['cmt'],
+                'precipHourTomorrowAttr': precipHourTomorrowAttr,
                 'precipHour3': precipHour3Attr['cmt'],
                 'precipHour3Attr': precipHour3Attr,
                 'precipHour6': precipHour6Attr['cmt'],
@@ -288,9 +288,9 @@ class WeatherUpdateCoordinator(DataUpdateCoordinator):
                 'precipHour12Attr': precipHour12Attr,
                 'weatherBriping': weather_briefing_join,
                 'weatherBripingAttr': weather_briefing,
-                'pmForcast': result_data4['pm']['forcast']['hourly'][0]['pm10'],
-                'pmForcastDaily': pmForcastDaily,
-                'pmForcastHourly': pmForcastHourly
+                'pmForecast': result_data4['pm']['forecast']['hourly'][0]['pm10'],
+                'pmForecastDaily': pmForecastDaily,
+                'pmForecastHourly': pmForecastHourly
             })
             
             result = {

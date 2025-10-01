@@ -280,12 +280,12 @@ current_condition_sensor_descriptions = [
         value_fn=lambda data, _: cast(str, data),
     ),
     WeatherSensorEntityDescription(
-        key="pmForcast",
-        name="pm Forcast",
+        key="pmForecast",
+        name="pm Forecast",
         icon="mdi:blur",
         unit_fn=lambda metric: CONCENTRATION_MICROGRAMS_PER_CUBIC_METER,
         value_fn=lambda data, _: cast(float, data),
-        attr_key=['pmForcastDaily','pmForcastHourly'],
+        attr_key=['pmForecastDaily','pmForecastHourly'],
     ),
     WeatherSensorEntityDescription(
         key="cur_cmt",
@@ -349,11 +349,11 @@ current_condition_sensor_descriptions = [
         attr_key=['precipHourTodayAttr'],
     ),
     WeatherSensorEntityDescription(
-        key="precipHourTomarrow",
-        name="precip Hour Today Tomarrow",
+        key="precipHourTomorrow",
+        name="precip Hour Today Tomorrow",
         icon="mdi:weather-rainy",
         value_fn=lambda data, _: cast(str, data),
-        attr_key=['precipHourTomarrowAttr'],
+        attr_key=['precipHourTomorrowAttr'],
     ),
     WeatherSensorEntityDescription(
         key="precipHour3",
