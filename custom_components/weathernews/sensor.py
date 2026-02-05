@@ -64,7 +64,7 @@ class WeatherSensor(CoordinatorEntity, SensorEntity):
         super().__init__(coordinator)
         self.entity_description = description
 
-        entity_id_format = description.key + ".{}"
+        entity_id_format = description.key.lower() + ".{}"
 
         self._attr_unique_id = f"wn_{self.coordinator.location_name},{description.key}".lower()
         self.entity_id = generate_entity_id(
