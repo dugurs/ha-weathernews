@@ -121,7 +121,7 @@ class WeatherSensor(CoordinatorEntity, SensorEntity):
         return {
             "identifiers": {(DOMAIN, self.coordinator._location_name)},
             "name": self.coordinator._location_name,
-            "sw_version": 1,
+            "sw_version": "1",
             "manufacturer": 'WeatherNews',
             "model": 'WeatherNews',
             "configuration_url": self.coordinator._build_url('https://www.kr-weathernews.com/mv4/html/today.html?loc={apiKey}')

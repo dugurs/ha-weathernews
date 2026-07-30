@@ -1,3 +1,6 @@
+v1.0.21 2026-07-30
+* sw_version 자료형 수정 (int -> str) (HA 2026.12 호환성)
+
 v1.0.0 2024-03-27
 * Initial release
 
