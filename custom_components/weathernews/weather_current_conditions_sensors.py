@@ -23,7 +23,12 @@ from .const import (
 )
 from homeassistant.components.sensor import SensorEntityDescription, SensorDeviceClass, SensorStateClass
 from homeassistant.const import PERCENTAGE, UV_INDEX, DEGREE, UnitOfLength, UnitOfTemperature, \
-    UnitOfVolumetricFlux, UnitOfPressure, UnitOfSpeed, CONCENTRATION_MICROGRAMS_PER_CUBIC_METER
+    UnitOfVolumetricFlux, UnitOfPressure, UnitOfSpeed
+try:
+    from homeassistant.const import UnitOfDensity
+    UNIT_UG_M3 = UnitOfDensity.MICROGRAMS_PER_CUBIC_METER
+except (ImportError, AttributeError):
+    from homeassistant.const import CONCENTRATION_MICROGRAMS_PER_CUBIC_METER as UNIT_UG_M3
 from homeassistant.helpers.typing import StateType
 
 
@@ -255,7 +260,7 @@ current_condition_sensor_descriptions = [
         key="pm10",
         name="PM10",
         icon="mdi:blur",
-        unit_fn=lambda metric: CONCENTRATION_MICROGRAMS_PER_CUBIC_METER,
+        unit_fn=lambda metric: UNIT_UG_M3,
         value_fn=lambda data, _: cast(float, data),
         attr_key=['pm10Attr'],
     ),
@@ -263,7 +268,7 @@ current_condition_sensor_descriptions = [
         key="pm25",
         name="PM2.5",
         icon="mdi:blur-linear",
-        unit_fn=lambda metric: CONCENTRATION_MICROGRAMS_PER_CUBIC_METER,
+        unit_fn=lambda metric: UNIT_UG_M3,
         value_fn=lambda data, _: cast(float, data),
         attr_key=['pm25Attr'],
     ),
@@ -283,7 +288,7 @@ current_condition_sensor_descriptions = [
         key="pmForecast",
         name="pm Forecast",
         icon="mdi:blur",
-        unit_fn=lambda metric: CONCENTRATION_MICROGRAMS_PER_CUBIC_METER,
+        unit_fn=lambda metric: UNIT_UG_M3,
         value_fn=lambda data, _: cast(float, data),
         attr_key=['pmForecastDaily','pmForecastHourly'],
     ),
@@ -336,7 +341,7 @@ current_condition_sensor_descriptions = [
         key="khai",
         name="CAI",
         icon="mdi:tailwind",
-        unit_fn=lambda metric: CONCENTRATION_MICROGRAMS_PER_CUBIC_METER,
+        unit_fn=lambda metric: UNIT_UG_M3,
         value_fn=lambda data, _: cast(float, data),
         # attr_fn=lambda _: {}
         attr_key=['pm'],

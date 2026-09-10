@@ -4,14 +4,12 @@ from __future__ import annotations
 
 import asyncio
 from dataclasses import dataclass
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 import logging
 from typing import Any
 
 import aiohttp
-import asyncio
 import json
-import async_timeout
 import re
 import copy
 
@@ -82,8 +80,7 @@ class WeatherUpdateCoordinator(DataUpdateCoordinator):
         self._lang = config.lang
         self.data = None
         self._session = async_get_clientsession(self._hass)
-        self._tranfile = None
-        asyncio.create_task(self.async_init())
+        self._tranfile: dict[str, Any] = {}
 
         if self._unit_system_api == 'm':
             self.units_of_measurement = (UnitOfTemperature.CELSIUS, UnitOfLength.MILLIMETERS, UnitOfLength.METERS,
@@ -129,7 +126,7 @@ class WeatherUpdateCoordinator(DataUpdateCoordinator):
         }
         try:
             
-            with async_timeout.timeout(10):
+            async with asyncio.timeout(10):
                 """CURRENT, FORECAST"""
                 # https://www.kr-weathernews.com/mv3/if/main_v4.fcgi?loc=1147010300&language=ko
                 url = self._build_url('https://www.kr-weathernews.com/mv3/if/main_v4.fcgi?loc={apiKey}&language={lang}')
@@ -142,70 +139,53 @@ class WeatherUpdateCoordinator(DataUpdateCoordinator):
                 lat = result_data['lat']
                 lon = result_data['lon']
 
-            with async_timeout.timeout(10):
-                """날씨요약"""
-                # https://galaxy.kr-weathernews.com/api_v2/weather_v4.cgi?loc=1147010300
-                url = self._build_url('https://galaxy.kr-weathernews.com/api_v2/weather_v4.cgi?loc={apiKey}&language={lang}')
-                response = await self._session.get(url, headers=headers)
-                result_data2 = await response.json(content_type=None)
+            async def _fetch_json(fetch_url: str):
+                resp = await self._session.get(fetch_url, headers=headers)
+                data = await resp.json(content_type=None)
+                if data is None:
+                    raise ValueError(f'NO RESULT from {fetch_url}')
+                self._check_errors(fetch_url, data)
+                return data
 
-                if result_data2 is None:
-                    raise ValueError('NO RESULT2')
-                self._check_errors(url, result_data2)
+            async with asyncio.timeout(10):
+                url2 = self._build_url('https://galaxy.kr-weathernews.com/api_v2/weather_v4.cgi?loc={apiKey}&language={lang}')
+                url3 = self._build_url(f"https://www.kr-weathernews.com/mv3/if/main2_v2.fcgi?lat={lat}&lon={lon}")
+                url4 = self._build_url("https://www.kr-weathernews.com/mv3/if/pm_v4.fcgi?loc={apiKey}")
+                result_data2, result_data3, result_data4 = await asyncio.gather(
+                    _fetch_json(url2),
+                    _fetch_json(url3),
+                    _fetch_json(url4)
+                )
 
-            with async_timeout.timeout(10):
-                """통합대기등급"""
-                # https://www.kr-weathernews.com/mv3/if/main2_v2.fcgi?lat=37.544147&lon=126.8357822
-                url = self._build_url(f"https://www.kr-weathernews.com/mv3/if/main2_v2.fcgi?lat={lat}&lon={lon}")
-                response = await self._session.get(url, headers=headers)
-                result_data3 = await response.json(content_type=None)
-
-                if result_data3 is None:
-                    raise ValueError('NO RESULT3')
-                self._check_errors(url, result_data3)
-                tempdiff = int(result_data3['current']['tempdiff'])
-                if tempdiff == 0:
-                    tempdiffCmt = "어제와 같아요"
-                else:
-                    tempdiffCmt = "어제보다 {}도 {}아요".format(abs(tempdiff), "높" if tempdiff > 0 else "낮")
+            tempdiff = int(float(result_data3['current']['tempdiff']))
+            if tempdiff == 0:
+                tempdiffCmt = "어제와 같아요"
+            else:
+                tempdiffCmt = "어제보다 {}도 {}아요".format(abs(tempdiff), "높" if tempdiff > 0 else "낮")
 
             pmForecastDaily = []
             pmForecastHourly = []
 
-            with async_timeout.timeout(10):
-                """미세먼지예보"""
-                # https://www.kr-weathernews.com/mv3/if/pm_v4.fcgi?loc=1147010300
-                url = self._build_url("https://www.kr-weathernews.com/mv3/if/pm_v4.fcgi?loc={apiKey}")
-                response = await self._session.get(url, headers=headers)
-                result_data4 = await response.json(content_type=None)
+            for pm in result_data4['pm']['forcast']['daily']:
+                new_pm = {
+                    "date": f'{pm["year"]}-{pm["mon"]:02d}-{pm["day"]:02d} 00:00:00',
+                    "pm10": pm["pm10"],
+                    "pm25": pm["pm25"],
+                    "aqi": pm["aqi"],
+                    "o3": pm["o3"],
+                    "pm10Desc": self._range_desc([30,80,150], pm["pm10"]),
+                    "pm25Desc": self._range_desc([15,35,75], pm["pm25"]),
+                    "aqiDesc": self._range_desc([50,100,250], pm["aqi"]),
+                }
+                pmForecastDaily.append(new_pm)
 
-                if result_data4 is None:
-                    raise ValueError('NO RESULT4')
-                self._check_errors(url, result_data4)
-                
-                # new_item = {'date': datetime.strptime(result_data2[0]['publish_TimeLocal'], "%Y/%m/%dT%H:%M:%S%z").strftime("%Y-%m-%d %H:%M:%S"), 'pm10': result_data2[0]['air']['pm10']['value'], 'pm25': result_data2[0]['air']['pm25']['value']}
-                # pmForecastDaily.append(new_item)
-                # pmForecastHourly.append(new_item)
-                for pm in result_data4['pm']['forcast']['daily']:
-                    new_pm = {
-                        "date": f'{pm["year"]}-{pm["mon"]:02d}-{pm["day"]:02d} 00:00:00',
-                        "pm10": pm["pm10"],
-                        "pm25": pm["pm25"],
-                        "aqi": pm["aqi"],
-                        "o3": pm["o3"],
-                        "pm10Desc": self._range_desc([30,80,150], pm["pm10"]),
-                        "pm25Desc": self._range_desc([15,35,75], pm["pm25"]),
-                        "aqiDesc": self._range_desc([50,100,250], pm["aqi"]),
-                    }
-                    pmForecastDaily.append(new_pm)
-
-                for pm in result_data4['pm']['forcast']['hourly']:
-                    new_pm = {
-                        "date": f'{pm["year"]}-{pm["mon"]:02d}-{pm["day"]:02d} {pm["hour"]:02d}:00:00',
-                        "pm10": pm["pm10"],
-                        "pm25": pm["pm25"]
-                    }
-                    pmForecastHourly.append(new_pm)
+            for pm in result_data4['pm']['forcast']['hourly']:
+                new_pm = {
+                    "date": f'{pm["year"]}-{pm["mon"]:02d}-{pm["day"]:02d} {pm["hour"]:02d}:00:00',
+                    "pm10": pm["pm10"],
+                    "pm25": pm["pm25"]
+                }
+                pmForecastHourly.append(new_pm)
 
             # 비시작시간
             remainhour = 24 - int(result_data['hourly'][0]['hour']) 
@@ -436,7 +416,7 @@ class WeatherUpdateCoordinator(DataUpdateCoordinator):
 
     @classmethod
     def _format_timestamp(cls, timestamp_secs):
-        return datetime.utcfromtimestamp(timestamp_secs).isoformat('T') + 'Z'
+        return datetime.fromtimestamp(timestamp_secs, tz=timezone.utc).isoformat().replace("+00:00", "Z")
 
     async def async_init(self):
         self._tranfile = await self.get_tran_file()
@@ -453,24 +433,24 @@ class WeatherUpdateCoordinator(DataUpdateCoordinator):
 
     def tran_key(self, key):
         """Return the name of the sensor."""
-        if key in self._tranfile.keys():
+        if self._tranfile and key in self._tranfile:
             return self._tranfile[key]
         return key
 
 async def load_json_async(filename):
-    loop = asyncio.get_event_loop()
+    loop = asyncio.get_running_loop()
     contents = await loop.run_in_executor(None, lambda: open(filename, mode='r', encoding='utf-8').read())
     return json.loads(contents)
 
 class InvalidApiKey(HomeAssistantError):
     """Error to indicate there is an invalid api key."""
 
-def heatIndexCalc(temp,hum):
+def heatIndexCalc(temp, hum):
     """https://github.com/gregnau/heat-index-calc/blob/master/heat-index-calc.py"""
 
-    temp = int(temp)
+    temp = int(float(temp))
     # ...then wait for the relative humidity in % value
-    hum = int(hum)
+    hum = int(float(hum))
     # Convert celius to fahrenheit (heat-index is only fahrenheit compatible)
     fahrenheit = ((temp * 9/5) + 32)
 

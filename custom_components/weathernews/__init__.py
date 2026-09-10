@@ -46,6 +46,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
     )
 
     weathercoordinator = WeatherUpdateCoordinator(hass, config)
+    await weathercoordinator.async_init()
     await weathercoordinator.async_config_entry_first_refresh()
 
     entry.async_on_unload(entry.add_update_listener(_async_update_listener))

@@ -2,7 +2,7 @@
 from __future__ import annotations
 import logging
 from http import HTTPStatus
-import async_timeout
+import asyncio
 import voluptuous as vol
 from homeassistant import config_entries
 import homeassistant.helpers.config_validation as cv
@@ -47,7 +47,7 @@ class WeatherFlowHandler(config_entries.ConfigFlow, domain=DOMAIN):
                 errors["base"] = "invalid_api_key"
                 raise InvalidApiKey
 
-            with async_timeout.timeout(10):
+            async with asyncio.timeout(10):
                 # Use English and US units for the initial test API call. User-supplied units and language will be used for
                 # the created entities.
                 url = f'https://www.kr-weathernews.com/mv3/if/main_v4.fcgi?loc={api_key}&language={lang}'

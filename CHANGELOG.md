@@ -1,3 +1,9 @@
+v1.0.25 2026-09-10
+* 미세먼지 단위 상수 UnitOfDensity 규격 업데이트 (HA 2027.8 대비)
+* 비동기 API 호출 병렬화(asyncio.gather)로 날씨/대기질 갱신 지연 시간 최적화
+* Python 3.11+ 표준 asyncio.timeout 및 timezone-aware UTC datetime 적용
+* 코디네이터 초기화 시 번역 사전 비동기 로딩 레이스 컨디션 및 예외 방어 로직 강화
+
 v1.0.24 2026-07-30
 * sw_version 자료형 수정 (int -> str) (HA 2026.12 호환성)
 
